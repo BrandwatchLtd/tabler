@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if IE 7 ]>    <html class="no-js ie ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie ie8"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <title>Jasmine Test Runner</title>
+
+    <link rel="stylesheet" href="jasmine/jasmine.css">
+    <link rel="favicon" href="jasmine/jasmine_favicon.ico">
+
+    <script src="jasmine/jasmine.js"></script>
+    <script src="jasmine/jasmine-html.js"></script>
+
+    <style>
+        body{
+            background-color:#FFF !important;
+            max-width:770px;
+            margin-right:260px;
+        }
+        #testArea{
+            position:absolute;
+            top:-10000px;
+            left:-10000px;
+            height:500px;
+            width: 770px;
+        }
+    </style>
+</head>
+<body>
+    <div id="testArea"></div>
+
+    <!-- most commonly used source files here... -->
+    <script src="lib/jquery-1.7.1.js"></script>
+    <script src="lib/underscore.js"></script>
+
+    <script src="lib/sinon-1.1.0.js"></script>
+
+    <script>
+        // Monkey-patch jqTabs to re-map to a variable that won't clash with jquery.ui.tabs
+        $.fn.jqTabs = $.fn.tabs;
+        delete $.fn.tabs;
+        var require = {
+            baseUrl: '/',
+            paths: {
+                'tabler': '../'
+            }
+        };
+        if(!window.console){
+            window.console = {
+                log: function(){},
+                warn: function(){},
+                error: function(){}
+            };
+        }
+        window.console.trace = window.console.trace || function(){};
+        window.console.time = window.console.time || function(){};
+        window.console.timeEnd = window.console.timeEnd || function(){};
+    </script>
+    <script src="lib/require.js"></script>
+
+    <!-- include spec files here... -->
+
+    <script>
+        require(['tabler.tests.js'], function(){
+            'use strict';
+            var env = window.jasmineEnv = jasmine.getEnv();
+            env.addReporter(new jasmine.TrivialReporter());
+
+            env.execute();
+        });
+    </script>
+
+</body>
+</html>
