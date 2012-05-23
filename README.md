@@ -3,6 +3,10 @@ Tabler.js
 
 A lightweight library for building dynamic tables.
 
+## Dependencies
+
+Tabler depends on underscore.js (http://documentcloud.github.com/underscore/)
+
 ## Usage
 
 Tabler works as an AMD module or standalone
