@@ -472,7 +472,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect($('.toggleColumnsUI .columns li input[type=checkbox]').length).toEqual(1);
                     expect($('.toggleColumnsUI .columns li input[type=checkbox]').eq(0).val()).toEqual('column2');
                 });
-                it('shows "off" columns unchecked', function(){
+                it('shows disabled columns unchecked', function(){
                     table.spec[0].disabled = true;
 
                     table.$('tr.toggleColumns button').click();
@@ -520,7 +520,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
 
                     expect(columnsToggledSpy.calledOnce).toEqual(true);
                 });
-                it('disables the "apply" button when no columns checked', function(){
+                it('disables the "Apply" button when no columns checked', function(){
                     var renderSpy = sinon.spy(table, 'render');
 
                     table.$('tr.toggleColumns button').click();
@@ -550,6 +550,23 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
 
                     expect(table.spec[0].disabled).toEqual(true);
                     expect(renderSpy.called).toEqual(false);
+                });
+                it('can toggle columns without a field name', function(){
+                    var renderSpy = sinon.spy(table, 'render');
+
+                    table.spec.push({name: 'No field', disabled: true});
+
+                    table.$('tr.toggleColumns button').click();
+
+                    $('.toggleColumnsUI .columns li input[type=checkbox]')
+                        .prop('checked', true);
+
+                    $('.toggleColumnsUI button.apply').click();
+
+                    expect(table.spec[0].disabled).not.toEqual(true);
+                    expect(table.spec[1].disabled).not.toEqual(true);
+                    expect(table.spec[2].disabled).not.toEqual(true);
+                    expect(renderSpy.calledOnce).toEqual(true);
                 });
 
                 describe('column groups', function(){

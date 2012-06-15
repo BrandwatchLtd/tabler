@@ -115,7 +115,7 @@
         e.preventDefault();
 
         $toggleUI.find('input[type=checkbox][name=column]').each(function(i, el){
-            var field = table.getField($(el).val());
+            var field = table.getField($(el).val() || undefined);
 
             field.disabled = !$(el).is(':checked');
         });
