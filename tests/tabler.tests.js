@@ -443,11 +443,30 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(table.$('thead tr:first th').attr('colspan')).toEqual('2');
                     expect(table.$('thead tr:first button').text()).toEqual('Columns');
                 });
-                it('can specify other HTML to go alongside button', function(){
+                it('can specify headerHTML to go alongside button', function(){
                     table.toggleColumns.headerHTML = '<p>Hello there</p>';
                     table.render();
 
                     expect(table.$('thead tr.toggleColumns th p').text()).toEqual('Hello there');
+                });
+                it('can specify a function for the headerHTML', function(){
+                    table.toggleColumns.headerHTML = function(){
+                        return '<p>Hello there again</p>';
+                    };
+                    table.render();
+
+                    expect(table.$('thead tr.toggleColumns th p').text()).toEqual('Hello there again');
+                });
+                it('calls headerHTML function on every render', function(){
+                    var i = 0;
+                    table.toggleColumns.headerHTML = function(){
+                        return '<p>Hello there again ' + (++i) + '</p>';
+                    };
+                    table.render();
+                    table.render();
+                    table.render();
+
+                    expect(table.$('thead tr.toggleColumns th p').text()).toEqual('Hello there again 3');
                 });
                 it('shows toggle UI on button click', function(){
                     table.$('tr.toggleColumns button').click();

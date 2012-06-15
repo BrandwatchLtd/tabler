@@ -145,7 +145,7 @@
 
             table.renderHead = function(data, spec){
                 var html = ['<tr class=toggleColumns>', '<th colspan="' + spec.length + '">',
-                        (self.headerHTML || ''),
+                        (_.isFunction(self.headerHTML) ? self.headerHTML() : (self.headerHTML || '')),
                         '<button class=showHide>Columns</button>',
                         '</th>', '</tr>'];
 
