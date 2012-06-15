@@ -11,7 +11,10 @@
     "serve": "*"
   },
   "optionalDependencies": {},
-  "engines": {
-    "node": "*"
+  "volo": {
+    "dependencies": {
+      "jquery": "jquery/jquery",
+      "underscore": "documentcloud/underscore"
+    }
   }
 }
