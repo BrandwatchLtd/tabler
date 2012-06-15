@@ -110,12 +110,21 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                 }
                 expect(err).toBeDefined();
             });
-            it('allows specs to be added via the addSpec method', function(){
+            it('allows specs to be added via the addToSpec method', function(){
                 var table = tabler.create([]);
 
                 table.addToSpec({field: 'column1'});
 
                 expect(table.spec[0]).toEqual({id: 'column1', field: 'column1'});
+            });
+            it('allows specs to be removed via the removeFromSpec method', function(){
+                var table = tabler.create([
+                    {id: 'column1', field: 'column1'}
+                ]);
+
+                table.removeFromSpec('column1');
+
+                expect(table.spec.length).toEqual(0);
             });
             it('allows you to pull out column specs by fieldName', function(){
                 var table = tabler.create([

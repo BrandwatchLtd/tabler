@@ -161,6 +161,11 @@ if( typeof module !== "undefined" && ('exports' in module)){
             validateSpec([spec]);
             this.spec.push(spec);
         },
+        removeFromSpec: function(matcher){
+            var spec = this.getField(matcher);
+
+            this.spec.splice(this.spec.indexOf(spec), 1);
+        },
         /*
          * Load the table with some data
         **/
