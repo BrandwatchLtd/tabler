@@ -41,7 +41,7 @@
             var pageOptions = getPageOptions(this, table.data),
                 pageSize = pageOptions.pageSize,
                 currentPage = pageOptions.currentPage,
-                totalPages = Math.ceil(pageOptions.totalResults / pageSize),
+                totalPages = this.totalPages = Math.ceil(pageOptions.totalResults / pageSize),
                 startAt = Math.max(currentPage - 2, 0),
                 endAt = Math.min(totalPages, startAt + 6),
                 onFirstPage = (currentPage === 0),
