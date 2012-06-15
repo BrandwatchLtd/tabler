@@ -727,6 +727,17 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
 
                         expect($('.toggleColumnsUI ul.columns > li:first input[name=column]').is(':checked')).toEqual(false);
                     });
+                    it('checks all columns when partially selected and clicked', function(){
+                        table.spec[0].disabled = true;
+
+                        table.$('tr.toggleColumns button').click();
+
+                        $('.toggleColumnsUI ul.columns > li:first input[name=columnGroup]').attr('checked', false).change();
+
+                        expect($('.toggleColumnsUI ul.columns > li:first input[name=columnGroup]').prop('checked')).toEqual(true);
+                        expect($('.toggleColumnsUI ul.columns > li input').is(':checked')).toEqual(true);
+                        expect($('.toggleColumnsUI ul.columns > li input').hasClass('partiallySelected')).toEqual(false);
+                    });
                     it('still applies changes to the table when apply clicked', function(){
                         table.spec[0].disabled = true;
 

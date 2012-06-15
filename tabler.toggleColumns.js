@@ -66,10 +66,16 @@
         var $columnGroupInput = $columnGroupLi
                 .find('input[name=columnGroup]'),
             $allColumns = $columnGroupLi
-                .find('input[name=column]');
+                .find('input[name=column]'),
+            wasPartiallySelected = $columnGroupInput.hasClass('partiallySelected');
 
-        $columnGroupInput.removeClass('partiallySelected');
-        $allColumns.prop('checked', $columnGroupInput.is(':checked'));
+        if(wasPartiallySelected){
+            $columnGroupInput.removeClass('partiallySelected');
+            $columnGroupInput.prop('checked', true);
+            $allColumns.prop('checked', true);
+        }else{
+            $allColumns.prop('checked', $columnGroupInput.is(':checked'));
+        }
     }
 
     function detachToggleUI(){
@@ -87,16 +93,13 @@
     $toggleUI.delegate('input', 'change', function(e){
         var $input = $(e.target);
 
-        $toggleUI.find('button.apply').prop('disabled', false);
         if($input.is('[name=column]')){
             checkColumnGroupStatus($input.parents('li.columnGroup'));
         }else if($input.is('[name=columnGroup]')){
             checkColumns($input.parents('li.columnGroup'));
         }
 
-        if($toggleUI.find('input[type=checkbox]:checked').length === 0){
-            $toggleUI.find('button.apply').prop('disabled', true);
-        }
+        $toggleUI.find('button.apply').prop('disabled', ($toggleUI.find('input[type=checkbox]:checked').length === 0));
     });
     $toggleUI.delegate('li.columnGroup a.opener', 'click', function(e){
         var $a = $(e.target),
@@ -137,7 +140,7 @@
     }
     ToggleColumns.pluginName = 'toggleColumns';
 
-     _.extend(ToggleColumns.prototype, {
+    _.extend(ToggleColumns.prototype, {
         getCustomColumn: function(findSpec){
             return _(this.customColumns).find(function(spec){
                 return _(findSpec).all(function(value, key){
