@@ -1,4 +1,4 @@
-define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregator', 'tabler/tabler.toggleColumns', 'tabler/tabler.sortable', 'tabler/tabler.pager', 'tabler/tabler.pageSize', 'tabler/tabler.jumpToPage', 'tabler/tabler.removeColumns'],
+define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabler.aggregator', 'lib/tabler/tabler.toggleColumns', 'lib/tabler/tabler.sortable', 'lib/tabler/tabler.pager', 'lib/tabler/tabler.pageSize', 'lib/tabler/tabler.jumpToPage', 'lib/tabler/tabler.removeColumns'],
         function(tabler, columnGrouper, aggregator, toggleColumns, sortable, pager, pageSize, jumpToPage, removeColumns){
     'use strict';
     describe('tabler', function(){
@@ -313,7 +313,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
         });
         describe('plugins', function(){
             beforeEach(function(){
-                tabler.pluginPrefix = 'tabler/tabler.';
+                tabler.pluginPrefix = 'lib/tabler/tabler.';
             });
             it('can create with plugins', function(){
                 var table;
@@ -821,6 +821,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                         });
                     });
                 });
+
                 describe('custom column defs', function(){
                     it('can add custom column definitions which aren\'t in main column definition and show up', function(){
                         table.toggleColumns.customColumns.push({id: 'custom', name: 'Custom field'});
@@ -955,7 +956,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
                 });
-                it('does not add sorted classes to columns without a fieldName', function(){
+                it('does not add sorted classes to columns without a field name', function(){
                     var table = tabler.create([
                         {name: 'column1'}
                     ], {plugins: [sortable]});
@@ -1343,7 +1344,6 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                                 expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('skipped')).toEqual(true);
                             });
                         });
-
                     });
                 });
                 describe('works with server-side paging', function(){
