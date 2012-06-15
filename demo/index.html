@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <h1>Tabler demos (Incomplete)</h1>
+
+    <div id="table">
+    </div>
+
+    <script src="jquery-1.7.1.js"></script>
+    <script src="underscore.js"></script>
+    <script src="/lib/tabler/tabler.js"></script>
+    <script>
+        var table = tabler.create();
+
+        table.load([
+            {column1: 'Value 1', column2: 'Value 1'},
+            {column1: 'Value 2', column2: 'Value 2'},
+            {column1: 'Value 3', column2: 'Value 3'},
+            {column1: 'Value 4', column2: 'Value 4'},
+            {column1: 'Value 5', column2: 'Value 5'}
+        ]);
+        table.render();
+
+        $('#table').html(table.$el);
+    </script>
+</html>
