@@ -115,7 +115,9 @@
         e.preventDefault();
 
         $toggleUI.find('input[type=checkbox][name=column]').each(function(i, el){
-            var field = table.getField($(el).val() || undefined);
+            var field = table.getField($(el).val()) || table.toggleColumns.getCustomColumn({
+                id: $(el).val()
+            });
 
             field.disabled = !$(el).is(':checked');
         });
@@ -135,13 +137,21 @@
     }
     ToggleColumns.pluginName = 'toggleColumns';
 
-    _.extend(ToggleColumns.prototype, {
+     _.extend(ToggleColumns.prototype, {
+        getCustomColumn: function(findSpec){
+            return _(this.customColumns).find(function(spec){
+                return _(findSpec).all(function(value, key){
+                    return spec[key] === value;
+                });
+            });
+        },
         attach: function(table){
             var self = this,
                 destroy = table.destroy,
                 renderHead = table.renderHead;
 
             this.table = table;
+            this.customColumns = [];
 
             table.renderHead = function(data, spec){
                 var html = ['<tr class=toggleColumns>', '<th colspan="' + spec.length + '">',
@@ -174,7 +184,8 @@
 
                 $toggleUI.data('table', table);
                 $toggleUI.find('button.apply').prop('disabled', false);
-                $toggleUI.find('ul.columns').html(_(table.spec).chain()
+                $toggleUI.find('ul.columns').html(_(table.toggleColumns.customColumns).chain()
+                        .union(table.spec)
                         .filter(function(spec){
                             return spec.toggleable !== false;
                         })
@@ -201,7 +212,7 @@
 
                             html = html.concat(_(group).map(function(spec){
                                 var id = _.uniqueId('toggleColumnsUIValue');
-                                return ['<li><input name=column type=checkbox value="', spec.id, '" id="', id, '" ',
+                                return ['<li><input name=column type=checkbox value="', (spec.id || spec.name), '" id="', id, '" ',
                                                 (spec.disabled ? '' : ' checked'),
                                             ' />',
                                             '<label for="',

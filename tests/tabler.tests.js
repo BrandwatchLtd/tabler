@@ -771,6 +771,30 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                         });
                     });
                 });
+                describe('custom column defs', function(){
+                    it('can add custom column definitions which aren\'t in main column definition and show up', function(){
+                        table.toggleColumns.customColumns.push({id: 'custom', name: 'Custom field'});
+
+                        table.$('tr.toggleColumns button').click();
+
+                        expect($('.toggleColumnsUI .columns li input[type=checkbox]').length).toEqual(3);
+                        expect($('.toggleColumnsUI .columns li input[type=checkbox]').eq(0).val()).toEqual('custom');
+                        expect($('.toggleColumnsUI .columns li input[type=checkbox]').eq(0).next().text()).toEqual('Custom field');
+                        expect($('.toggleColumnsUI .columns li input[type=checkbox]').eq(1).val()).toEqual('column1');
+                        expect($('.toggleColumnsUI .columns li input[type=checkbox]').eq(2).val()).toEqual('column2');
+                    });
+                    it('sets that field as disabled: true when unchecked', function(){
+                        table.toggleColumns.customColumns.push({id: 'custom', name: 'Custom field'});
+
+                        table.$('tr.toggleColumns button').click();
+
+                        $('.toggleColumnsUI .columns li input[type=checkbox]').prop('checked', false);
+
+                        $('.toggleColumnsUI button.apply').click();
+
+                        expect(table.toggleColumns.getCustomColumn({id: 'custom'}).disabled).toEqual(true);
+                    });
+                });
             });
             describe('sortable', function(){
                 it('adds client-side sorting to columns with sortable: true', function(){
