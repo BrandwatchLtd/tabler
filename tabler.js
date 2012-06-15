@@ -202,7 +202,7 @@ if( typeof module !== "undefined" && ('exports' in module)){
         /*
          * Formats a particular column value of a particular row
         **/
-        formatValue: function(row, colSpec){
+        formatValue: function(table, row, colSpec, index){
             var value = row[colSpec.field],
                 formatter = colSpec.formatter;
 
@@ -214,7 +214,7 @@ if( typeof module !== "undefined" && ('exports' in module)){
                 return value;
             }
 
-            return formatter.call(colSpec, value, colSpec, row);
+            return formatter.call(table, value, colSpec, row, index);
         },
         /*
          * Where the magic happens
@@ -290,9 +290,9 @@ if( typeof module !== "undefined" && ('exports' in module)){
         **/
         renderBody: function(data, spec){
             var self = this,
-                body = _(data).map(function(row){
+                body = _(data).map(function(row, i){
                         return ['<tr>'].concat(_(spec).map(function(colSpec){
-                            return self.makeTag('td', self.formatValue(row, colSpec), self.makeColumnAttrs(colSpec));
+                            return self.makeTag('td', self.formatValue(self, row, colSpec, i), self.makeColumnAttrs(colSpec));
                         })
                     ).concat('</tr>').join('\n');
                 }).join('\n');

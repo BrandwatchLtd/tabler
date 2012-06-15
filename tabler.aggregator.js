@@ -18,12 +18,12 @@
     _.extend(Aggregator.prototype, {
         attach: function(table){
             var formatValue = table.formatValue;
-            table.formatValue = function(row, colSpec){
+            table.formatValue = function(table, row, colSpec, index){
                 var aggregator = colSpec.aggregator,
                     value = row[colSpec.field];
 
                 if(aggregator){
-                    colSpec._memo = aggregator.call(colSpec, colSpec._memo, value);
+                    colSpec._memo = aggregator.call(table, colSpec._memo, value, index);
                 }
 
                 return formatValue.apply(this, arguments);

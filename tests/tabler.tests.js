@@ -178,7 +178,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                 expect(table.$('thead tr th').eq(0).html().toLowerCase()).toEqual('<span>column1</span>');
             });
             it('can have formatter functions on cells', function(){
-                var formatter = sinon.spy(function(value, columnSpec, rowData){
+                var formatter = sinon.spy(function(value, columnSpec, rowData, index){
                         return '<a href="#">' + value + '</a>';
                     }),
                     table = tabler.create([
@@ -192,9 +192,11 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                 table.render();
 
                 expect(formatter.calledTwice).toEqual(true);
+                expect(formatter.alwaysCalledOn(table)).toEqual(true);
                 expect(formatter.args[0][0]).toEqual('column 1a');
                 expect(formatter.args[0][1]).toEqual(table.spec[0]);
                 expect(formatter.args[0][2]).toEqual(table.data[0]);
+                expect(formatter.args[0][3]).toEqual(0);
                 expect(table.$('tr').eq(0).find('td').eq(0).html().toLowerCase()).toEqual('<a href="#">column 1a</a>');
                 expect(table.$('tr').eq(1).find('td').eq(0).html().toLowerCase()).toEqual('<a href="#">column 1b</a>');
             });
