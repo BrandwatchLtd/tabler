@@ -7,9 +7,8 @@
     "url": "git://github.com/BrandwatchLtd/tabler.git"
   },
   "dependencies": {},
-  "devDependencies": {},
-  "optionalDependencies": {},
-  "engines": {
-    "node": "*"
-  }
+  "devDependencies": {
+    "serve": "*"
+  },
+  "optionalDependencies": {}
 }
