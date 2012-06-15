@@ -1107,9 +1107,10 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                             expect(table.$('tfoot ol.pager li.current').text()).toEqual('6');
                             expect(table.$('tfoot ol.pager li.current').data('page')).toEqual(5);
                         });
-                        it('renders the first page link', function(){
+                        it('renders the first page link with "skipped" class', function(){
                             expect(table.$('tfoot ol.pager li:not(.prev):first').text()).toEqual('1');
                             expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('first')).toEqual(true);
+                            expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('skipped')).toEqual(true);
                             expect(table.$('tfoot ol.pager li:not(.prev):first').data('page')).toEqual(0);
                         });
                         it('renders the previous 2 page links before current', function(){
@@ -1132,9 +1133,10 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                             expect(previousLinks.eq(2).text()).toEqual('9');
                             expect(previousLinks.eq(2).data('page')).toEqual(8);
                         });
-                        it('renders the last page link', function(){
+                        it('renders the last page link with "skipped" class', function(){
                             expect(table.$('tfoot ol.pager li:not(.next):last').text()).toEqual('13');
                             expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('last')).toEqual(true);
+                            expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('skipped')).toEqual(true);
                             expect(table.$('tfoot ol.pager li:not(.next):last').data('page')).toEqual(12);
                         });
                     });
@@ -1165,8 +1167,8 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                             expect(table.$('tfoot ol.pager li:not(.current,.prev,.first)').eq(4).data('page')).toEqual(11);
                             expect(table.$('tfoot ol.pager li:not(.current,.prev,.first)').eq(4).text()).toEqual('12');
                         });
-                        it('does not render last link', function(){
-                            expect(table.$('tfoot ol.pager li.last').length).toEqual(0);
+                        it('renders last link', function(){
+                            expect(table.$('tfoot ol.pager li.last').length).toEqual(1);
                         });
                     });
                     describe('edge-cases', function(){
@@ -1201,6 +1203,97 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                                 expect(nextLinks.eq(2).hasClass('last')).toEqual(true);
                             });
                         });
+                        describe('on second page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 1;
+                                table.render();
+                            });
+                            it('does not give "skipped" class to first element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('first')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('skipped')).toEqual(false);
+                            });
+                        });
+                        describe('on third page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 2;
+                                table.render();
+                            });
+                            it('does not give "skipped" class to first element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('first')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('skipped')).toEqual(false);
+                            });
+                        });
+                        describe('on fourth page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 3;
+                                table.render();
+                            });
+                            it('does not give "skipped" class to first element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('first')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('skipped')).toEqual(false);
+                            });
+                        });
+                        describe('on fifth page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 4;
+                                table.render();
+                            });
+                            it('gives "skipped" class to first element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('first')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.prev):first').hasClass('skipped')).toEqual(true);
+                            });
+                        });
+                        describe('on last but one page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 12;
+                                table.render();
+                            });
+                            it('does not give "skipped" class to last element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('last')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('skipped')).toEqual(false);
+                            });
+                        });
+                        describe('on last but two page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 11;
+                                table.render();
+                            });
+                            it('does not give "skipped" class to last element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('last')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('skipped')).toEqual(false);
+                            });
+                        });
+                        describe('on last but three page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 10;
+                                table.render();
+                            });
+                            it('does not give "skipped" class to last element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('last')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('skipped')).toEqual(false);
+                            });
+                        });
+                        describe('on last but four page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 9;
+                                table.render();
+                            });
+                            it('does not give "skipped" class to last element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('last')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('skipped')).toEqual(false);
+                            });
+                        });
+                        describe('on last but five page', function(){
+                            beforeEach(function(){
+                                table.pager.currentPage = 8;
+                                table.render();
+                            });
+                            it('does not give "skipped" class to last element', function(){
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('last')).toEqual(true);
+                                expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('skipped')).toEqual(true);
+                            });
+                        });
+
                     });
                 });
                 describe('works with server-side paging', function(){

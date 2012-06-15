@@ -37,6 +37,9 @@
                 pager: this
             }, data, spec);
         },
+        /*
+         * If 'spec' is falsey then we assume we're rendering outside of a tabler (standalone) and don't renders any su
+        **/
         renderPager: function(table, data, spec){
             var pageOptions = getPageOptions(this, table.data),
                 pageSize = pageOptions.pageSize,
@@ -46,7 +49,8 @@
                 endAt = Math.min(totalPages, startAt + 6),
                 onFirstPage = (currentPage === 0),
                 onLastPage = (currentPage === totalPages - 1),
-                foot = (spec ? ['<tr>', '<td colspan="' + spec.length + '">'] : []).concat(
+                pagerSpec = [],
+                pagerHtml = (spec ? ['<tr>', '<td colspan="' + spec.length + '">'] : []).concat(
                     ['<ol class=pager>']
                 );
 
@@ -60,29 +64,54 @@
             }
 
             if(currentPage > 0){
-                foot.push('<li data-page="' + (currentPage - 1) + '" class=prev><a href="#">Previous</a></li>');
+                pagerSpec.push({
+                    pageIndex: currentPage - 1,
+                    className: 'prev',
+                    text: 'Previous'
+                });
 
                 if(currentPage > 2){
                     if(startAt === 0){
                         startAt++;
                     }
-                    foot.push('<li data-page="0" class=first><a href="#">1</a></li>');
+                    pagerSpec.push({
+                        pageIndex: 0,
+                        className: 'first' + (currentPage > 3 ? ' skipped' : ''),
+                        text: 1
+                    });
                 }
             }
 
             for(var i = startAt; i < endAt; i++){
-                foot.push('<li data-page="' + i + '"' + (i === currentPage ? ' class=current' : '') + '><a href="#">' + (i+1) + '</a></li>');
-            }
+                pagerSpec.push({
+                    pageIndex: i,
+                    className: (i === currentPage ? 'current' : '') + (i === 0 ? ' first' : '') + (i === totalPages - 1 ? ' last' : ''),
+                    text: (i+1)
+                });
+             }
 
-            if(totalPages > 5 && !onLastPage){
-                foot.push('<li data-page="' + (totalPages - 1) + '" class=last><a href="#">' + totalPages + '</a></li>');
-            }
+             if(totalPages > 5 && !onLastPage){
+                pagerSpec.push({
+                    pageIndex: (totalPages - 1),
+                    className: 'last' + (currentPage < (totalPages - 4) ? ' skipped' : ''),
+                    text: totalPages
+                });
+             }
 
-            if(currentPage < totalPages - 1){
-                foot.push('<li data-page="' + (currentPage + 1) + '" class=next><a href="#">Next</a></li>');
-            }
+             if(currentPage < totalPages - 1){
+                pagerSpec.push({
+                    pageIndex: (currentPage + 1),
+                    className: 'next',
+                    text: 'Next'
+                });
+             }
 
-            return _.flatten(foot.concat(['</ol>', spec ? ['</td>', '</tr>'] : []])).join('\n');
+            _(pagerSpec).each(function(p){
+                pagerHtml.push('<li data-page="' + p.pageIndex + '" class="' + p.className + '"><a href>' + p.text + '</a></li>');
+
+            });
+
+            return _.flatten(pagerHtml.concat(['</ol>', spec ? ['</td>', '</tr>'] : []])).join('\n');
         },
         attach: function(instance){
             var self = this,
