@@ -201,12 +201,12 @@
 
                             html = html.concat(_(group).map(function(spec){
                                 var id = _.uniqueId('toggleColumnsUIValue');
-                                return ['<li><input name=column type=checkbox value="', spec.field, '" id="', id, '" ',
+                                return ['<li><input name=column type=checkbox value="', spec.id, '" id="', id, '" ',
                                                 (spec.disabled ? '' : ' checked'),
                                             ' />',
                                             '<label for="',
                                                 id,
-                                            '">', (spec.name || spec.field), '</label>',
+                                            '">', (spec.name || spec.field || spec.id), '</label>',
                                         '</li>'].join('');
                             }));
 

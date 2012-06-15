@@ -91,11 +91,31 @@ if( typeof module !== "undefined" && ('exports' in module)){
             .value();
     }
 
+    function validateSpec(spec){
+        var duplicateFields = _(spec).reduce(function(fields, s, i){
+            var name = s.id = s.id || s.field || s.name;
+
+            if(!name){
+                throw new Error('Spec field at index ' + i + ' does not have a field, id or name property');
+            }
+
+            fields[name] = (fields[name] || 0) + 1;
+
+            if(fields[name] > 1){
+                throw new Error('Spec field at index ' + i + ' has duplicate "field" or "id" property of "' + name + '", if it has no "id" property add one, if it has an "id" property add one, if it has an "id" property ensure it is unique');
+            }
+
+            return fields;
+        }, {});
+    }
+
     /*
      * Constructor doesn't do much
     **/
     function Tabler(spec){
         var self = this;
+
+        validateSpec(spec);
 
         this.spec = spec;
 
@@ -137,6 +157,10 @@ if( typeof module !== "undefined" && ('exports' in module)){
 
             this[Plugin.pluginName] = plugin;
         },
+        addToSpec: function(spec){
+            validateSpec([spec]);
+            this.spec.push(spec);
+        },
         /*
          * Load the table with some data
         **/
@@ -149,22 +173,28 @@ if( typeof module !== "undefined" && ('exports' in module)){
          * Destroys this instance
         **/
         destroy: function(){
-            this.$el.empty().unbind();
+            this.$el.unbind().empty();
         },
         /*
-         * Retrieve a given field spec by field name
+         * Retrieve a given field spec by field id, which will equal either the "field" or "name" attribute if no "id" is explicitly given on creation
+         *
+         * Can also supply a hash of desired attributes, eg {name: 'Name'} or {customValue: 'value'}, in which case
+         * this method will only return the first field that matches the given hash
         **/
-        getField: function(fieldName, matchValues){
-            matchValues = matchValues || {};
+        getField: function(matcher){
+            if(_.isUndefined(matcher)){
+                throw new Error('matcher must be defined (a string or an object literal)');
+            }
 
-            if(_.isObject(fieldName)){
-                matchValues = fieldName;
-            }else{
-                matchValues.field = fieldName;
+            // Can call with no fieldname and just {..vars..}
+            if(!_.isObject(matcher)){
+                matcher = {
+                    id: matcher
+                };
             }
 
             return _(this.spec).detect(function(spec){
-                if(_(matchValues).all(function(value, key){
+                if(_(matcher).all(function(value, key){
                                 return spec[key] === value;
                             })){
                     return spec;

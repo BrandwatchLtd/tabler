@@ -21,7 +21,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                 expect(table.$('tr').eq(1).find('td').eq(0).text()).toEqual('column 1b');
                 expect(table.$('tr').eq(1).find('td').eq(1).text()).toEqual('column 2b');
             });
-            it('will only render the fields given in the spec', function(){
+            it('will only render the fields given in the spec, when there is a spec', function(){
                 var table = tabler.create([
                     {field: 'column1'}
                 ]);
@@ -62,6 +62,61 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                 expect(table.$('tr').eq(5).find('td').eq(0).text()).toEqual('false');
                 expect(table.$('tr').eq(6).find('td').eq(0).text()).toEqual('0');
             });
+            it('does not allow duplicate fieldnames', function(){
+                var err;
+                try{
+                    tabler.create([
+                        {field: 'column1'},
+                        {field: 'column1'}
+                    ]);
+                }catch(e){
+                    err = e;
+                }
+                expect(err).toBeDefined();
+            });
+            it('allows duplicate fieldnames when one field has a unique "id" attribute', function(){
+                var err;
+                try{
+                    tabler.create([
+                        {field: 'column1'},
+                        {id: 'column1_id', field: 'column1'}
+                    ]);
+                }catch(e){
+                    err = e;
+                }
+
+                expect(err).not.toBeDefined();
+            });
+            it('does not allow duplicate ids', function(){
+                var err;
+                try{
+                    tabler.create([
+                        {id: 'id', field: 'column2'},
+                        {id: 'id', field: 'column2'}
+                    ]);
+                }catch(e){
+                    err = e;
+                }
+                expect(err).toBeDefined();
+            });
+            it('does not allow specs without an id or field', function(){
+                var err;
+                try{
+                    tabler.create([
+                        {}
+                    ]);
+                }catch(e){
+                    err = e;
+                }
+                expect(err).toBeDefined();
+            });
+            it('allows specs to be added via the addSpec method', function(){
+                var table = tabler.create([]);
+
+                table.addToSpec({field: 'column1'});
+
+                expect(table.spec[0]).toEqual({id: 'column1', field: 'column1'});
+            });
             it('allows you to pull out column specs by fieldName', function(){
                 var table = tabler.create([
                         {field: 'column1', name: 'testing', prop: 'customValue'}
@@ -70,31 +125,29 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
 
                 field = table.getField('column1');
 
-                expect(field).toEqual({field: 'column1', name: 'testing', prop: 'customValue'});
+                expect(field).toEqual({field: 'column1', name: 'testing', prop: 'customValue', id: 'column1'});
             });
-            it('allows you to pull out column specs by fieldName and other attributes', function(){
+            it('allows you to pull out column specs by id', function(){
                 var table = tabler.create([
-                        {field: 'column1', name: 'testing', prop: 'other'},
-                        {field: 'column1', name: 'testing', prop: 'customValue'},
-                        {field: 'column1', name: 'testing', prop: 'yetAnother'}
+                        {id: 'id', field: 'column1', name: 'testing', prop: 'customValue'}
                     ]),
                     field;
 
-                field = table.getField('column1', {prop: 'customValue'});
+                field = table.getField('id');
 
-                expect(field).toEqual({field: 'column1', name: 'testing', prop: 'customValue'});
+                expect(field).toEqual({id: 'id', field: 'column1', name: 'testing', prop: 'customValue'});
             });
             it('allows you to pull out column specs by other attributes on their own', function(){
                 var table = tabler.create([
-                        {field: 'column1', name: 'testing', prop: 'other'},
-                        {field: 'column1', name: 'testing', prop: 'customValue'},
-                        {field: 'column1', name: 'testing', prop: 'yetAnother'}
+                        {id: 1, field: 'column1', name: 'testing', prop: 'other'},
+                        {id: 2, field: 'column1', name: 'testing', prop: 'customValue'},
+                        {id: 3, field: 'column1', name: 'testing', prop: 'yetAnother'}
                     ]),
                     field;
 
                 field = table.getField({prop: 'customValue'});
 
-                expect(field).toEqual({field: 'column1', name: 'testing', prop: 'customValue'});
+                expect(field).toEqual({id: 2, field: 'column1', name: 'testing', prop: 'customValue'});
             });
             it('builds thead and th elements with labels as defined in spec', function(){
                 var table = tabler.create([
@@ -568,7 +621,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                 it('can toggle columns without a field name', function(){
                     var renderSpy = sinon.spy(table, 'render');
 
-                    table.spec.push({name: 'No field', disabled: true});
+                    table.addToSpec({name: 'No field', disabled: true});
 
                     table.$('tr.toggleColumns button').click();
 
@@ -808,7 +861,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
                 });
-                it('does not add sorted classes to columns without a field name', function(){
+                it('does not add sorted classes to columns without a fieldName', function(){
                     var table = tabler.create([
                         {name: 'column1'}
                     ], {plugins: [sortable]});
