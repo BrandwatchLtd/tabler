@@ -22,11 +22,13 @@ Tabler works as an AMD module or standalone
 
 ### Standalone
 
-    Coming soon...
+Just reference the scripts directly, ensuring any plugins are added *after* the tabler.js script itself.
+
+Tabler will be available via the `tabler` global object.  The plugins will hang off `tabler.pluginName`.
 
 ## Configuration
 
-Configuration for the table iself is done through the specs passed to the `tabler.create()` method:
+Configuration for the table iself is done through the specs passed to the `tabler.create()` method, a typical example:
 
     var table = tabler.create([
         {field: 'name', name: 'Name'},
@@ -44,11 +46,14 @@ Configuration for the table iself is done through the specs passed to the `table
 
 The Default set of configuration parameters are:
 
+* id: A unique ID for the row, if not specified then one will be generated from either the `field` or `name` property (in that order).  If an ID is not unique, then an error will be thrown.
 * field: The field from each row to render
 * name: The title for the column that will appear in the header. If you do not specify a name attribute for any column then the table will not have any columns
 * formatter: A function(row, colSpec) that returns formatted data for the row (eg wrap each number in a link)
 * headerFormatter: A function(colSpec) that returns formatted data for the column header (eg wrapped in a link)
 * disabled: true/false whether the table should render the column at all
+
+Plugins may add support for additional parameters (see below)
 
 ## Using Plugins
 
@@ -136,3 +141,17 @@ Adds anchors to designated column headers, making them sortable on click
 Options:
 
 * sorter: function(data, field, dir, callback) that can perform server-side sorting (run the callback when done)
+
+### toggleColumns
+
+This adds a "Columns" button into the table header, which when clicked allows the user to choose which columns to show/hide.
+
+Internally, hiding a column is the same as setting `disabled: true` on it. Columns can be opted out of being toggleable by setting `toggleable: false` on the spec.
+
+### jumpToPage
+
+Used in conjunction with the pager plugin, adds a "Jump to page" input box into the pager row, which allows the user to jump directly to a specific page of results.
+
+### removeColumns
+
+Adds an "x" link to each toggleable column header and column group, which disables the column when clicked
