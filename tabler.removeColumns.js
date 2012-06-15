@@ -10,7 +10,7 @@
 })(this, function($, _){
     'use strict';
     function getLinkHtml(specIds){
-        return '<a href class="removeColumn" data-ids="' + _.escape(JSON.stringify(specIds)) + '">x</a>';
+        return '<a href class="removeColumn" data-ids="' + _.escape(JSON.stringify(specIds)) + '" title="Hide this column. To show again later, click the &quot;Columns&quot; button top right">x</a>';
     }
 
     /*
