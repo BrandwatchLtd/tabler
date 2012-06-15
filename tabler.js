@@ -319,7 +319,7 @@ if( typeof module !== "undefined" && ('exports' in module)){
                         var title = (_.isString(colSpec.title) ? colSpec.title : colSpec.name);
 
                         if(colSpec.headerFormatter){
-                            title = colSpec.headerFormatter(colSpec, title);
+                            title = colSpec.headerFormatter.call(self, colSpec, title);
                         }
 
                         return self.makeTag('th', title, self.makeColumnAttrs(colSpec));
