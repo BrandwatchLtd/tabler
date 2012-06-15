@@ -154,14 +154,22 @@ if( typeof module !== "undefined" && ('exports' in module)){
         /*
          * Retrieve a given field spec by field name
         **/
-        getField: function(field, matchValues){
-             return _(this.spec).detect(function(spec){
-                if(spec.field === field && _(matchValues).all(function(value, key){
+        getField: function(fieldName, matchValues){
+            matchValues = matchValues || {};
+
+            if(_.isObject(fieldName)){
+                matchValues = fieldName;
+            }else{
+                matchValues.field = fieldName;
+            }
+
+            return _(this.spec).detect(function(spec){
+                if(_(matchValues).all(function(value, key){
                                 return spec[key] === value;
                             })){
                     return spec;
                 }
-             });
+            });
          },
         /*
          * Builds the standard attributes for a column - here mostly for plugins to be able to override

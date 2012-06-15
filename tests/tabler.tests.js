@@ -84,6 +84,18 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
 
                 expect(field).toEqual({field: 'column1', name: 'testing', prop: 'customValue'});
             });
+            it('allows you to pull out column specs by other attributes on their own', function(){
+                var table = tabler.create([
+                        {field: 'column1', name: 'testing', prop: 'other'},
+                        {field: 'column1', name: 'testing', prop: 'customValue'},
+                        {field: 'column1', name: 'testing', prop: 'yetAnother'}
+                    ]),
+                    field;
+
+                field = table.getField({prop: 'customValue'});
+
+                expect(field).toEqual({field: 'column1', name: 'testing', prop: 'customValue'});
+            });
             it('builds thead and th elements with labels as defined in spec', function(){
                 var table = tabler.create([
                     {field: 'column1', name: 'Column 1'},
