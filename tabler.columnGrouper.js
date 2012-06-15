@@ -44,7 +44,10 @@
                         .map(function(groupSpec){
                             var formatter = self.formatters[groupSpec.groupName] || defaultFormatter;
 
-                            return table.makeTag('th', formatter(groupSpec), {colspan: groupSpec.count});
+                            return table.makeTag('th', formatter(groupSpec), {
+                                colspan: groupSpec.count,
+                                'class': groupSpec.groupName.replace(/\s/g, '-').toLowerCase()
+                            });
                         })
                         .value().join('\n') + '</tr>';
                 }

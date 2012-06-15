@@ -392,6 +392,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(table.$('thead tr:first th').eq(0).text()).toEqual('');
                     expect(table.$('thead tr:first th').eq(1).attr('colspan')).toEqual('2');
                     expect(table.$('thead tr:first th').eq(1).text()).toEqual('Group 1');
+                    expect(table.$('thead tr:first th').eq(1).attr('class')).toEqual('group-1');
                     expect(table.$('thead tr:first th').eq(2).attr('colspan')).toEqual('1');
                     expect(table.$('thead tr:first th').eq(2).text()).toEqual('');
                 });
