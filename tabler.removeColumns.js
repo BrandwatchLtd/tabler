@@ -55,7 +55,7 @@
                 var oldFormatter = spec.headerFormatter;
 
                 spec.headerFormatter = function(spec){
-                    var html = '';
+                    var html = _.isString(spec.title) ? spec.title : spec.name;
                     if(oldFormatter){
                         html = oldFormatter.call(this, spec);
                     }
