@@ -48,7 +48,7 @@
                         .replace(/sorted-desc/g, '')
                         .replace(/(^\s|\s$)/g, '');
                 }
-                if(colSpec.field === field){
+                if(colSpec.field === field && colSpec.sortable){
                     spec = colSpec;
                 }
             });
@@ -56,7 +56,7 @@
             if(!spec){
                 return done();
             }
-            spec.className += ' sorted-' + dir;
+            spec.className = ((spec.className || '') + ' sorted-' + dir).trim();
 
             // Sort the underlying data
             this.sorter(table.data, field, dir, function(err, data){

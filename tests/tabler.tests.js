@@ -765,6 +765,20 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
                 });
+                it('does not add sorted classes to columns without a field name', function(){
+                    var table = tabler.create([
+                        {name: 'column1'}
+                    ], {plugins: [sortable]});
+
+                    table.load([
+                        {column1: 30},
+                        {column1: 10},
+                        {column1: 20}
+                    ]);
+                    table.render();
+
+                    expect(table.$('thead th').eq(0).attr('class') || '').toEqual('');
+                });
                 it('cleans up invalid sort direction', function(){
                     var table = tabler.create([
                         {field: 'column1', sortable: true},
