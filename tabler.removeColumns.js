@@ -37,10 +37,11 @@
     }
     RemoveColumns.pluginName = 'removeColumns';
 
-    function setupColumnGroup(columnGrouper, spec){
+    function setupColumnGroup(table, spec){
         spec = [].concat(spec);
 
-        var groups = columnGrouper.getColumnGroups(spec);
+        var columnGrouper = table.columnGrouper,
+            groups = columnGrouper.getColumnGroups(spec);
 
         _(groups).forEach(function(groupSpec){
             var oldFormatter = columnGrouper.formatters[groupSpec.groupName],
@@ -60,7 +61,10 @@
             }
 
             columnGrouper.formatters[groupSpec.groupName] = function(groupSpec){
-                var html = groupSpec.groupName;
+                var html = groupSpec.groupName,
+                    specs = _(table.spec).filter(function(spec){
+                        return spec.groupName == groupSpec.groupName;
+                    });
 
                 if(oldFormatter){
                     html = oldFormatter.call(this, groupSpec);
@@ -69,7 +73,7 @@
                     html = getLinkHtml(_(specs).pluck('id')) + html;
                 }
                 return '<span class="name">' + html + '</span>';
-             };
+            };
             columnGrouper.formatters[groupSpec.groupName]._removeColumnsFormatted = true;
         });
     }
@@ -92,7 +96,7 @@
 
                 _([].concat(spec)).forEach(function(colSpec){
                     if(table.columnGrouper){
-                        setupColumnGroup(table.columnGrouper, spec);
+                        setupColumnGroup(table, spec);
                     }
                 });
             };
@@ -110,6 +114,7 @@
                     }
                 });
 
+                table.trigger('columnsToggled');
                 table.render();
             });
         }

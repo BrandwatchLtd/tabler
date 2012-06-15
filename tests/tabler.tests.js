@@ -178,6 +178,36 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                 expect(table.$('thead th').eq(1).text().trim()).toEqual('Column 2');
                 expect(table.$('tbody tr').length).toEqual(2);
             });
+            it('builds columns with custom header text', function(){
+                var table = tabler.create([
+                    {field: 'column1', name: 'Column 1', title: 'First Column'}
+                ]);
+
+                table.load([
+                    {column1: 'column 1a'},
+                    {column1: 'column 1b'}
+                ]);
+
+                table.render();
+
+                expect(table.$('thead th').length).toEqual(1);
+                expect(table.$('thead th').eq(0).text().trim()).toEqual('First Column');
+            });
+            it('builds columns with custom header text even when that text is an empty string', function(){
+                var table = tabler.create([
+                    {field: 'column1', name: 'Column 1', title: ''}
+                ]);
+
+                table.load([
+                    {column1: 'column 1a'},
+                    {column1: 'column 1b'}
+                ]);
+
+                table.render();
+
+                expect(table.$('thead th').length).toEqual(1);
+                expect(table.$('thead th').eq(0).text().trim()).toEqual('');
+            });
             it('can give columns a width and a CSS class', function(){
                 var table = tabler.create([
                     {field: 'column1', name: 'Column 1', width: '25%'},
@@ -1637,6 +1667,10 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     table.$('thead tr:last th:eq(0) a.removeColumn').click();
 
                     expect(table.spec[0].disabled).toEqual(true);
+                    expect(table.spec[1].disabled).not.toBeDefined();
+                    expect(table.spec[2].disabled).not.toBeDefined();
+                    expect(table.spec[3].disabled).not.toBeDefined();
+                    expect(table.spec[4].disabled).not.toBeDefined();
                 });
                 it('disables the column group on click of a.removeColumn', function(){
                     table.$('thead tr.columnGroups th:eq(0) a.removeColumn').click();
@@ -1644,6 +1678,25 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(table.spec[0].disabled).toEqual(true);
                     expect(table.spec[1].disabled).toEqual(true);
                     expect(table.spec[2].disabled).toEqual(true);
+                    expect(table.spec[3].disabled).not.toBeDefined();
+                    expect(table.spec[4].disabled).not.toBeDefined();
+                });
+                it('can disable a column group when extra columns added to that column group after init', function(){
+                    table.addToSpec({
+                        field: "column6",
+                        groupName: 'Group 1',
+                        title: 'column6'
+                    });
+
+                    table.render();
+                    table.$('thead tr.columnGroups th:eq(0) a.removeColumn').click();
+
+                    expect(table.spec[0].disabled).toEqual(true);
+                    expect(table.spec[1].disabled).toEqual(true);
+                    expect(table.spec[2].disabled).toEqual(true);
+                    expect(table.spec[3].disabled).not.toBeDefined();
+                    expect(table.spec[4].disabled).not.toBeDefined();
+                    expect(table.spec[5].disabled).toEqual(true);
                 });
                 it('raises columnsToggle on click of a.removeColumn', function(){
                     var columnsToggledSpy = sinon.spy();
@@ -1652,11 +1705,9 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
 
                     table.$('thead tr.columnGroups th:eq(0) a.removeColumn').click();
 
-                    expect(table.spec[0].disabled).toEqual(true);
-                    expect(table.spec[1].disabled).toEqual(true);
-                    expect(table.spec[2].disabled).toEqual(true);
+                    expect(columnsToggledSpy.calledOnce).toEqual(true);
                 });
             });
-       });
+        });
     });
 });
