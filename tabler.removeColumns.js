@@ -38,7 +38,9 @@
     RemoveColumns.pluginName = 'removeColumns';
 
     function setupColumnGroup(columnGrouper, spec){
-        var groups = columnGrouper.getColumnGroups([].concat(spec));
+        spec = [].concat(spec);
+
+        var groups = columnGrouper.getColumnGroups(spec);
 
         _(groups).forEach(function(groupSpec){
             var oldFormatter = columnGrouper.formatters[groupSpec.groupName],
