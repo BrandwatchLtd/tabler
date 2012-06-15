@@ -10,6 +10,14 @@
 })(this, function($, _){
     'use strict';
 
+    function addSortableFieldsToSpec(colSpec){
+        if(colSpec.sortable){
+            colSpec.name = colSpec.name || colSpec.field;
+            colSpec.className = (colSpec.className || '') + ' sortable';
+            colSpec.headerFormatter = renderSortableHeader;
+        }
+    }
+
     function renderSortableHeader(colSpec){
         return '<a href="#" data-sort-key="' + colSpec.field + '">' + colSpec.name + '</a>';
     }
@@ -71,12 +79,15 @@
             this.table = table;
 
             _(table.spec).forEach(function(colSpec){
-                if(colSpec.sortable){
-                    colSpec.name = colSpec.name || colSpec.field;
-                    colSpec.className = (colSpec.className || '') + ' sortable';
-                    colSpec.headerFormatter = renderSortableHeader;
-                }
+                addSortableFieldsToSpec(colSpec);
             });
+
+            var addToSpec = table.addToSpec;
+            table.addToSpec = function(spec){
+                addSortableFieldsToSpec(spec);
+
+                addToSpec.apply(this, arguments);
+            };
 
             var renderTable = table.render;
             table.render = function(){

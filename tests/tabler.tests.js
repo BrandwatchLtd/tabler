@@ -924,6 +924,13 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(sorter.args[1][1]).toEqual('column1');
                     expect(sorter.args[1][2]).toEqual('asc');
                 });
+                it('adds sortable classes to fields added after the table is initialised', function(){
+                    var table = tabler.create([{field: 'column1', sortable: true}], {plugins: [sortable]});
+
+                    table.addToSpec({field: 'column2', sortable: true});
+
+                    expect(table.spec[1].className.trim()).toEqual('sortable');
+                });
             });
             describe('pager', function(){
                 var table;
