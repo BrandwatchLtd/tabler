@@ -312,6 +312,9 @@ if( typeof module !== "undefined" && ('exports' in module)){
             }
             return head;
         },
+        renderBodyTr: function(row){
+            return '<tr>';
+        },
         /*
          * Renders row(s) for the tbody of the table
          *
@@ -321,7 +324,7 @@ if( typeof module !== "undefined" && ('exports' in module)){
         renderBody: function(data, spec){
             var self = this,
                 body = _(data).map(function(row, i){
-                        return ['<tr>'].concat(_(spec).map(function(colSpec){
+                        return [self.renderBodyTr(row)].concat(_(spec).map(function(colSpec){
                             return self.makeTag('td', self.formatValue(self, row, colSpec, i), self.makeColumnAttrs(colSpec));
                         })
                     ).concat('</tr>').join('\n');
