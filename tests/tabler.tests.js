@@ -1,5 +1,5 @@
-define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregator', 'tabler/tabler.toggleColumns', 'tabler/tabler.sortable', 'tabler/tabler.pager', 'tabler/tabler.pageSize', 'tabler/tabler.jumpToPage'],
-        function(tabler, columnGrouper, aggregator, toggleColumns, sortable, pager, pageSize, jumpToPage){
+define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregator', 'tabler/tabler.toggleColumns', 'tabler/tabler.sortable', 'tabler/tabler.pager', 'tabler/tabler.pageSize', 'tabler/tabler.jumpToPage', 'tabler/tabler.removeColumns'],
+        function(tabler, columnGrouper, aggregator, toggleColumns, sortable, pager, pageSize, jumpToPage, removeColumns){
     'use strict';
     describe('tabler', function(){
         describe('rendering', function(){
@@ -1481,6 +1481,61 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
 
                     expect(renderStub.called).toEqual(false);
                     expect(table.$('p.jumpToPage input').hasClass('invalid')).toEqual(true);
+                });
+            });
+            describe('removeColumns', function(){
+                var table;
+                beforeEach(function(){
+                    table = tabler.create([
+                        {field: "column1", groupName: 'Group 1'},
+                        {field: "column2", groupName: 'Group 1'},
+                        {field: "column3", groupName: 'Group 1'},
+                        {field: "column4", groupName: 'Group 2'},
+                        {field: "column5", groupName: 'Group 2', toggleable: false}
+                    ], {plugins: [columnGrouper, removeColumns]});
+
+                    table.load([
+                        {column1: '1a', column2: '2a', column3: '3a', column4: '4a', column5: '5a'},
+                        {column1: '1b', column2: '2b', column3: '3b', column4: '4b', column5: '5b'},
+                        {column1: '1c', column2: '2c', column3: '3c', column4: '4c', column5: '5c'},
+                        {column1: '1d', column2: '2d', column3: '3d', column4: '4d', column5: '5d'},
+                        {column1: '1e', column2: '2e', column3: '3e', column4: '4e', column5: '5e'}
+                    ]);
+                    table.render();
+                });
+                it('renders a remove link in every toggleable column header', function(){
+                    expect(table.$('thead tr:last th:eq(0) a.removeColumn').length).toEqual(1);
+                    expect(table.$('thead tr:last th:eq(1) a.removeColumn').length).toEqual(1);
+                    expect(table.$('thead tr:last th:eq(2) a.removeColumn').length).toEqual(1);
+                    expect(table.$('thead tr:last th:eq(3) a.removeColumn').length).toEqual(1);
+                    expect(table.$('thead tr:last th:eq(4) a.removeColumn').length).toEqual(0);
+                });
+                it('renders a remove link in every toggleable column group header', function(){
+                    expect(table.$('thead tr.columnGroups th:eq(0) a.removeColumn').length).toEqual(1);
+                    expect(table.$('thead tr.columnGroups th:eq(1) a.removeColumn').length).toEqual(0);
+                });
+                it('disables the column on click of a.removeColumn', function(){
+                    table.$('thead tr:last th:eq(0) a.removeColumn').click();
+
+                    expect(table.spec[0].disabled).toEqual(true);
+                });
+                it('disables the column group on click of a.removeColumn', function(){
+                    table.$('thead tr.columnGroups th:eq(0) a.removeColumn').click();
+
+                    expect(table.spec[0].disabled).toEqual(true);
+                    expect(table.spec[1].disabled).toEqual(true);
+                    expect(table.spec[2].disabled).toEqual(true);
+                });
+                it('raises columnsToggle on click of a.removeColumn', function(){
+                    var columnsToggledSpy = sinon.spy();
+
+                    table.bind('columnsToggled', columnsToggledSpy);
+
+                    table.$('thead tr.columnGroups th:eq(0) a.removeColumn').click();
+
+                    expect(table.spec[0].disabled).toEqual(true);
+                    expect(table.spec[1].disabled).toEqual(true);
+                    expect(table.spec[2].disabled).toEqual(true);
                 });
             });
        });
