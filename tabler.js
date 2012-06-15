@@ -113,12 +113,6 @@ if( typeof module !== "undefined" && ('exports' in module)){
      * Constructor doesn't do much
     **/
     function Tabler(spec){
-        var self = this;
-
-        validateSpec(spec);
-
-        this.spec = spec;
-
         this.$el = $('<table />');
     }
 
@@ -129,12 +123,17 @@ if( typeof module !== "undefined" && ('exports' in module)){
      * - opts: An options hash, at the moment only {plugin: Array} is supported
     **/
     Tabler.create = function(spec, opts){
-        var table = new Tabler(spec),
+        var table = new Tabler(),
             options = opts || {};
 
         _(options.plugins).forEach(function(plugin){
             table.addPlugin(plugin);
         });
+
+        if(spec){
+            table.spec = [];
+            table.addToSpec(spec);
+        }
 
         return table;
     };
@@ -158,8 +157,13 @@ if( typeof module !== "undefined" && ('exports' in module)){
             this[Plugin.pluginName] = plugin;
         },
         addToSpec: function(spec){
-            validateSpec([spec]);
-            this.spec.push(spec);
+            var specs = [].concat(spec);
+
+            validateSpec(specs);
+
+            for(var i = 0; i < specs.length; i++){
+                this.spec.push(specs[i]);
+            }
         },
         removeFromSpec: function(matcher){
             var spec = this.getField(matcher);
@@ -261,7 +265,8 @@ if( typeof module !== "undefined" && ('exports' in module)){
             data = (data || this.data);
 
             if(!this.spec){
-                this.spec = buildDefaultSpec(data);
+                this.spec = [];
+                this.addToSpec(buildDefaultSpec(data));
             }
 
             spec = _(this.spec).filter(function(colSpec){
@@ -311,7 +316,13 @@ if( typeof module !== "undefined" && ('exports' in module)){
                 // Main headings
                 head += '<tr>' + _(spec)
                     .map(function(colSpec){
-                        return self.makeTag('th', colSpec.headerFormatter ? colSpec.headerFormatter(colSpec) : colSpec.name, self.makeColumnAttrs(colSpec));
+                        var title = (_.isString(colSpec.title) ? colSpec.title : colSpec.name);
+
+                        if(colSpec.headerFormatter){
+                            title = colSpec.headerFormatter(colSpec, title);
+                        }
+
+                        return self.makeTag('th', title, self.makeColumnAttrs(colSpec));
                     })
                     .join('\n') + '</tr>';
             }

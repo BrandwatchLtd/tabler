@@ -12,14 +12,21 @@
 
     function addSortableFieldsToSpec(colSpec){
         if(colSpec.sortable){
+            var oldFormatter = colSpec.headerFormatter;
+
             colSpec.name = colSpec.name || colSpec.field;
             colSpec.className = (colSpec.className || '') + ' sortable';
-            colSpec.headerFormatter = renderSortableHeader;
-        }
-    }
 
-    function renderSortableHeader(colSpec){
-        return '<a href="#" data-sort-key="' + colSpec.field + '">' + colSpec.name + '</a>';
+            colSpec.headerFormatter = function renderSortableHeader(colSpec, html){
+                html = '<a href class="sort" data-sort-key="' + colSpec.field + '">' + html + '</a>';
+
+                if(oldFormatter){
+                    html = oldFormatter.call(this, colSpec, html);
+                }
+
+                return html;
+            };
+        }
     }
 
     function defaultSort(data, field, dir, done){
@@ -84,9 +91,11 @@
 
             var addToSpec = table.addToSpec;
             table.addToSpec = function(spec){
-                addSortableFieldsToSpec(spec);
+                _([].concat(spec)).forEach(function(colSpec){
+                    addSortableFieldsToSpec(colSpec);
+                });
 
-                addToSpec.apply(this, arguments);
+                addToSpec.call(this, spec);
             };
 
             var renderTable = table.render;
@@ -96,9 +105,9 @@
                 });
             };
 
-            table.$el.delegate('th.sortable a', 'click', function(e){
+            table.$el.delegate('th.sortable a.sort', 'click', function(e){
                 var $a = $(e.target),
-                    $th = $a.parent(),
+                    $th = $a.closest('th'),
                     field = $a.data('sort-key'),
                     dir = $th.hasClass('sorted-asc') ? 'desc' : $th.hasClass('sorted-desc') ? 'asc' : 'desc';
 

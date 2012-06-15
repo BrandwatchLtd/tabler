@@ -833,9 +833,9 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(table.$('tr').length).toEqual(4);
                     expect(table.$('thead').length).toEqual(1);
                     expect(table.$('thead th').hasClass('sortable')).toEqual(true);
-                    expect(table.$('thead th').eq(0).find('a').length).toEqual(1);
-                    expect(table.$('thead th').eq(0).find('a').data('sort-key')).toEqual('column1');
-                    expect(table.$('thead th').eq(1).find('a').length).toEqual(0);
+                    expect(table.$('thead th').eq(0).find('a.sort').length).toEqual(1);
+                    expect(table.$('thead th').eq(0).find('a.sort').data('sort-key')).toEqual('column1');
+                    expect(table.$('thead th').eq(1).find('a.sort').length).toEqual(0);
                 });
                 it('can client-side sorts descending on first header click', function(){
                     var table = tabler.create([
@@ -850,7 +850,7 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     ]);
                     table.render();
 
-                    table.$('thead th:first a').click();
+                    table.$('thead th:first a.sort').click();
 
                     expect(table.$('thead th:first').attr('class')).toEqual('sortable sorted-desc');
                     expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('30');
@@ -870,8 +870,8 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     ]);
                     table.render();
 
-                    table.$('thead th:first a').click();
-                    table.$('thead th:first a').click();
+                    table.$('thead th:first a.sort').click();
+                    table.$('thead th:first a.sort').click();
 
                     expect(table.$('thead th:first').attr('class')).toEqual('sortable sorted-asc');
                     expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('10');
@@ -977,8 +977,8 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     ]);
                     table.render();
 
-                    table.$('thead th:first a').click();
-                    table.$('thead th:first a').click();
+                    table.$('thead th:first a.sort').click();
+                    table.$('thead th:first a.sort').click();
 
                     expect(sorter.calledTwice).toEqual(true);
                     expect(sorter.args[0][0]).toEqual(data);
@@ -1600,11 +1600,11 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                 var table;
                 beforeEach(function(){
                     table = tabler.create([
-                        {field: "column1", groupName: 'Group 1'},
-                        {field: "column2", groupName: 'Group 1'},
-                        {field: "column3", groupName: 'Group 1'},
-                        {field: "column4", groupName: 'Group 2'},
-                        {field: "column5", groupName: 'Group 2', toggleable: false}
+                        {field: "column1", groupName: 'Group 1', title: 'column1'},
+                        {field: "column2", groupName: 'Group 1', title: 'column1'},
+                        {field: "column3", groupName: 'Group 1', title: 'column1'},
+                        {field: "column4", groupName: 'Group 2', title: ''},
+                        {field: "column5", groupName: 'Group 2', title: 'column1', toggleable: false}
                     ], {plugins: [columnGrouper, removeColumns]});
 
                     table.load([
@@ -1620,12 +1620,18 @@ define(['tabler/tabler', 'tabler/tabler.columnGrouper', 'tabler/tabler.aggregato
                     expect(table.$('thead tr:last th:eq(0) a.removeColumn').length).toEqual(1);
                     expect(table.$('thead tr:last th:eq(1) a.removeColumn').length).toEqual(1);
                     expect(table.$('thead tr:last th:eq(2) a.removeColumn').length).toEqual(1);
-                    expect(table.$('thead tr:last th:eq(3) a.removeColumn').length).toEqual(1);
+                    expect(table.$('thead tr:last th:eq(3) a.removeColumn').length).toEqual(0);
                     expect(table.$('thead tr:last th:eq(4) a.removeColumn').length).toEqual(0);
                 });
                 it('renders a remove link in every toggleable column group header', function(){
                     expect(table.$('thead tr.columnGroups th:eq(0) a.removeColumn').length).toEqual(1);
                     expect(table.$('thead tr.columnGroups th:eq(1) a.removeColumn').length).toEqual(0);
+                });
+                it('wraps each th contents in a span', function(){
+                    expect(table.$('thead tr:eq(0) th > span').length).toEqual(table.$('thead tr:eq(0) th').length);
+                    expect(table.$('thead tr:eq(1) th > span').length).toEqual(table.$('thead tr:eq(1) th').length);
+
+                    console.log(table.$('thead tr:eq(1) th'));
                 });
                 it('disables the column on click of a.removeColumn', function(){
                     table.$('thead tr:last th:eq(0) a.removeColumn').click();
