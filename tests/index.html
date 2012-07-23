@@ -31,19 +31,15 @@
     <div id="testArea"></div>
 
     <!-- most commonly used source files here... -->
-    <script src="lib/jquery-1.7.1.js"></script>
-    <script src="lib/underscore.js"></script>
-
     <script src="lib/sinon-1.1.0.js"></script>
 
     <script>
-        // Monkey-patch jqTabs to re-map to a variable that won't clash with jquery.ui.tabs
-        $.fn.jqTabs = $.fn.tabs;
-        delete $.fn.tabs;
         var require = {
             baseUrl: '/',
             paths: {
-                'tabler': '../'
+                'tabler': '../',
+                'jquery': 'tests/lib/jquery-1.7.1',
+                'underscore': 'tests/lib/underscore'
             }
         };
         if(!window.console){
