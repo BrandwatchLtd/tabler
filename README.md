@@ -9,15 +9,15 @@ Tabler works as an AMD module or standalone
 
 ### AMD
 
-    define(['lib/tabler/tabler'], function(tabler){
+    define(['lib/tabler/tabler', 'lib/tabler/tabler.sortable'], function(tabler, sortable){
         // Your module code
-        var table = tabler.create();
+        var table = tabler.create(columns, {plugins: [sortable]});
 
         table.load([..data..]);
         table.render();
 
         $(..el..).append(table.$el);
-        // More module code
+        // More your module code
     });
 
 ### Standalone
@@ -69,7 +69,7 @@ Or add plugins later on:
 
 The included plugins are also AMD modules and should be required in the same manner as the main module.
 
-As you can see, plugin options cannot currently be specific when calling the create method.  You can normally set these after the fact (eg table.pager.options.pageSize or table.sortable.sorter)
+As you can see, plugin options cannot currently be specified when calling the create method.  You can set these after the fact instead (eg table.pager.options.pageSize or table.sortable.sorter)
 
 ## Included Plugins
 
