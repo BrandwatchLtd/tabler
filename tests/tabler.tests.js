@@ -876,6 +876,40 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('thead th').eq(0).find('a.sort').data('sort-key')).toEqual('column1');
                     expect(table.$('thead th').eq(1).find('a.sort').length).toEqual(0);
                 });
+                it('preserves className on ths', function(){
+                    var table = tabler.create([
+                        {field: 'column1', sortable: true, className: 'myClass'}
+                    ], {plugins: [sortable]});
+
+                    table.load([
+                        {column1: 30, column2: 200},
+                        {column1: 10, column2: 400},
+                        {column1: 20, column2: 600}
+                    ]);
+                    table.render();
+
+                    expect(table.$('tr').length).toEqual(4);
+                    expect(table.$('thead').length).toEqual(1);
+                    expect(table.$('thead th').hasClass('sortable')).toEqual(true);
+                    expect(table.$('thead th').hasClass('myClass')).toEqual(true);
+                });
+                it('preserves headerClassName on ths', function(){
+                    var table = tabler.create([
+                        {field: 'column1', sortable: true, headerClassName: 'myClass'}
+                    ], {plugins: [sortable]});
+
+                    table.load([
+                        {column1: 30, column2: 200},
+                        {column1: 10, column2: 400},
+                        {column1: 20, column2: 600}
+                    ]);
+                    table.render();
+
+                    expect(table.$('tr').length).toEqual(4);
+                    expect(table.$('thead').length).toEqual(1);
+                    expect(table.$('thead th').hasClass('sortable')).toEqual(true);
+                    expect(table.$('thead th').hasClass('myClass')).toEqual(true);
+                });
                 it('can client-side sorts descending on first header click', function(){
                     var table = tabler.create([
                         {field: 'column1', sortable: true},
