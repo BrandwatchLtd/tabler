@@ -3,6 +3,12 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
     'use strict';
     describe('tabler', function(){
         describe('rendering', function(){
+            it('gives the table a class if specified', function(){
+                var table = tabler.create(null, {className: 'testClass'});
+
+                expect(table.$el.hasClass('testClass')).toEqual(true);
+            });
+
             it('renders as a table with rows from results', function(){
                 var table = tabler.create();
 
@@ -158,10 +164,10 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                 expect(field).toEqual({id: 2, field: 'column1', name: 'testing', prop: 'customValue'});
             });
-            it('builds thead and th elements with labels as defined in spec', function(){
+            it('builds thead and th elements with labels and classes as defined in spec', function(){
                 var table = tabler.create([
-                    {field: 'column1', name: 'Column 1'},
-                    {field: 'column2', name: 'Column 2'}
+                    {field: 'column1', name: 'Column 1', headerClassName: 'column1Class'},
+                    {field: 'column2', name: 'Column 2', headerClassName: 'column2Class'}
                 ]);
 
                 table.load([
@@ -176,6 +182,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('thead th').length).toEqual(2);
                 expect(table.$('thead th').eq(0).text().trim()).toEqual('Column 1');
                 expect(table.$('thead th').eq(1).text().trim()).toEqual('Column 2');
+                expect(table.$('thead th').eq(0).hasClass('column1Class')).toEqual(true);
+                expect(table.$('thead th').eq(1).hasClass('column2Class')).toEqual(true);
                 expect(table.$('tbody tr').length).toEqual(2);
             });
             it('builds columns with custom header text', function(){
@@ -867,6 +875,40 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('thead th').eq(0).find('a.sort').length).toEqual(1);
                     expect(table.$('thead th').eq(0).find('a.sort').data('sort-key')).toEqual('column1');
                     expect(table.$('thead th').eq(1).find('a.sort').length).toEqual(0);
+                });
+                it('preserves className on ths', function(){
+                    var table = tabler.create([
+                        {field: 'column1', sortable: true, className: 'myClass'}
+                    ], {plugins: [sortable]});
+
+                    table.load([
+                        {column1: 30, column2: 200},
+                        {column1: 10, column2: 400},
+                        {column1: 20, column2: 600}
+                    ]);
+                    table.render();
+
+                    expect(table.$('tr').length).toEqual(4);
+                    expect(table.$('thead').length).toEqual(1);
+                    expect(table.$('thead th').hasClass('sortable')).toEqual(true);
+                    expect(table.$('thead th').hasClass('myClass')).toEqual(true);
+                });
+                it('preserves headerClassName on ths', function(){
+                    var table = tabler.create([
+                        {field: 'column1', sortable: true, headerClassName: 'myClass'}
+                    ], {plugins: [sortable]});
+
+                    table.load([
+                        {column1: 30, column2: 200},
+                        {column1: 10, column2: 400},
+                        {column1: 20, column2: 600}
+                    ]);
+                    table.render();
+
+                    expect(table.$('tr').length).toEqual(4);
+                    expect(table.$('thead').length).toEqual(1);
+                    expect(table.$('thead th').hasClass('sortable')).toEqual(true);
+                    expect(table.$('thead th').hasClass('myClass')).toEqual(true);
                 });
                 it('can client-side sorts descending on first header click', function(){
                     var table = tabler.create([
