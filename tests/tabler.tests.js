@@ -951,6 +951,47 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('30');
                 });
+                it('sorts on TH click', function(){
+                    var table = tabler.create([
+                        {field: 'column1', sortable: true},
+                        {field: 'column2', sortable: false}
+                    ], {plugins: [sortable]});
+
+                    table.load([
+                        {column1: 30, column2: 200},
+                        {column1: 10, column2: 400},
+                        {column1: 20, column2: 600}
+                    ]);
+                    table.render();
+
+                    table.$('thead th:first').click();
+                    table.$('thead th:first').click();
+
+                    expect(table.$('thead th:first').attr('class')).toEqual('sortable sorted-asc');
+                    expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('10');
+                    expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
+                    expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('30');
+                });
+                it('does not sort unsortable columns on TH click', function(){
+                    var table = tabler.create([
+                        {field: 'column1', sortable: true},
+                        {field: 'column2', sortable: false}
+                    ], {plugins: [sortable]});
+
+                    table.load([
+                        {column1: 30, column2: 500},
+                        {column1: 10, column2: 400},
+                        {column1: 20, column2: 600}
+                    ]);
+                    table.render();
+
+                    table.$('thead th:eq(1)').click();
+
+                    expect(table.$('thead th:eq(1)').hasClass('sorted-desc')).toEqual(false);
+                    expect(table.$('tbody tr').eq(0).find('td').eq(1).text()).toEqual('500');
+                    expect(table.$('tbody tr').eq(1).find('td').eq(1).text()).toEqual('400');
+                    expect(table.$('tbody tr').eq(2).find('td').eq(1).text()).toEqual('600');
+                });
                 it('can pre-sort table', function(){
                     var table = tabler.create([
                         {field: 'column1', sortable: true},
@@ -1702,8 +1743,6 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 it('wraps each th contents in a span', function(){
                     expect(table.$('thead tr:eq(0) th > span').length).toEqual(table.$('thead tr:eq(0) th').length);
                     expect(table.$('thead tr:eq(1) th > span').length).toEqual(table.$('thead tr:eq(1) th').length);
-
-                    console.log(table.$('thead tr:eq(1) th'));
                 });
                 it('disables the column on click of a.removeColumn', function(){
                     table.$('thead tr:last th:eq(0) a.removeColumn').click();
