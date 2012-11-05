@@ -7,8 +7,10 @@
         <script src="jquery-1.7.1.js"></script>
         <script src="underscore.js"></script>
         <script src="/lib/tabler/tabler.js"></script>
+        <script src="/lib/tabler/tabler.pager.js"></script>
 
         <script>
+            // Use your own key!
             RT_API_KEY = 'uht2fj2a3erk5tgkn6cm3m38';
         </script>
     </head>
@@ -74,24 +76,67 @@
                                 return '<img src="' + data.thumbnail + '" />';
                             }}
                         ], {
-                            className: 'table'
+                            className: 'table',
+                            fetch: function(options, done){
+                                $.ajax({
+                                    url: 'http://api.rottentomatoes.com/api/public/v1.0/movies.json',
+                                    dataType: 'jsonp',
+                                    data: {
+                                        apikey: RT_API_KEY,
+                                        q: 'Die Hard',
+                                        page_limit: 5,
+                                        page: 1
+                                    }
+                                }).success(function(data){
+                                    done({
+                                        totalResults: data.total,
+                                        items: data.movies
+                                    });
+                                });
+                            }
                         });
-
-                    $.ajax({
-                        url: 'http://api.rottentomatoes.com/api/public/v1.0/movies.json',
-                        dataType: 'jsonp',
-                        data: {
-                            apikey: RT_API_KEY,
-                            q: 'Die Hard',
-                            page_limit: 5,
-                            page: 1
-                        }
-                    }).success(function(data){
-                        ajaxTable.load(data.movies);
-                        ajaxTable.render();
-                    });
+                    ajaxTable.render();
 
                     $('#ajaxTable').html(ajaxTable.$el);
+                </script>
+            </div>
+
+            <div id="paged-table">
+                <h2>Table with pager</h2>
+                <div id="pagedTable"></div>
+
+                <script>
+                    var pagedTable = tabler.create([
+                            {field:'title', name: 'Name'},
+                            {field:'year', name: 'Year'},
+                            {field:'posters', name: 'Poster', formatter: function(data){
+                                return '<img src="' + data.thumbnail + '" />';
+                            }}
+                        ], {
+                            className: 'table',
+                            plugins: [tabler.pager],
+                            fetch: function(options, done){
+                                $.ajax({
+                                    url: 'http://api.rottentomatoes.com/api/public/v1.0/movies.json',
+                                    dataType: 'jsonp',
+                                    data: {
+                                        apikey: RT_API_KEY,
+                                        q: 'Die Hard',
+                                        page_limit: 5,
+                                        page: 1
+                                    }
+                                }).success(function(data){
+                                    done({
+                                        totalResults: data.total,
+                                        pageSize: options.pageSize,
+                                        items: data.movies
+                                    });
+                                });
+                            }
+                        });
+                    pagedTable.render();
+
+                    $('#pagedTable').html(pagedTable.$el);
                 </script>
             </div>
         </div>

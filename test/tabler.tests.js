@@ -330,7 +330,7 @@ define([
                 expect(formatter.alwaysCalledOn(table)).toEqual(true);
                 expect(formatter.args[0][0]).toEqual('column 1a');
                 expect(formatter.args[0][1]).toEqual(table.spec[0]);
-                expect(formatter.args[0][2]).toEqual(table.data[0]);
+                expect(formatter.args[0][2]).toEqual(table._data.items[0]);
                 expect(formatter.args[0][3]).toEqual(0);
                 expect(table.$('tr').eq(0).find('td').eq(0).html().toLowerCase()).toEqual('<a href="#">column 1a</a>');
                 expect(table.$('tr').eq(1).find('td').eq(0).html().toLowerCase()).toEqual('<a href="#">column 1b</a>');
@@ -353,6 +353,61 @@ define([
 
                 expect(table.$el.is(':empty')).toEqual(true);
                 expect(clickSpy.called).toEqual(false);
+            });
+        });
+        describe('dynamic data', function(){
+            it('calls "fetch" method on render if specified', function(){
+                var fetchSpy = sinon.spy(),
+                    table = tabler.create({
+                        fetch: fetchSpy
+                    });
+
+                table.render();
+
+                expect(fetchSpy.calledOnce).toEqual(true);
+                expect(fetchSpy.args[0][0]).toEqual({});
+            });
+            it('has "loading" class on table while waiting for fetch', function(){
+                var fetchSpy = sinon.spy(),
+                    table = tabler.create({
+                        fetch: fetchSpy
+                    });
+
+                table.render();
+
+                expect(table.$el.hasClass('loading')).toEqual(true);
+            });
+            it('renders table with fetched data when fetch returns', function(){
+                var fetchSpy = sinon.spy(),
+                    table = tabler.create({
+                        fetch: fetchSpy
+                    });
+
+                table.render();
+                fetchSpy.args[0][1]({
+                    items: [
+                        {column1: 'Column 1 Value 1', column2: 'Column 2 Value 1'}
+                    ]
+                });
+
+                expect(table.$('tr').length).toEqual(1);
+                expect(table.$('tr td').eq(0).text()).toEqual('Column 1 Value 1');
+                expect(table.$('tr td').eq(1).text()).toEqual('Column 2 Value 1');
+            });
+            it('removes "loading" class on table when fetch returns', function(){
+                var fetchSpy = sinon.spy(),
+                    table = tabler.create({
+                        fetch: fetchSpy
+                    });
+
+                table.render();
+                fetchSpy.args[0][1]({
+                    items: [
+                        {column1: 'Column 1 Value 1', column2: 'Column 2 Value 1'}
+                    ]
+                });
+
+                expect(table.$el.hasClass('loading')).toEqual(false);
             });
         });
         describe('plugins', function(){
@@ -1075,8 +1130,8 @@ define([
                     expect(table.$('thead th').eq(0).attr('class')).toEqual('sortable');
                     expect(table.$('thead th').eq(1).attr('class')).toEqual('sortable');
                     expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('30');
-                    expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
-                    expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
+                    expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('10');
+                    expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('20');
                 });
                 it('does not add sorted classes to columns without a field name', function(){
                     table = tabler.create([
@@ -1109,22 +1164,21 @@ define([
                     table.render();
 
                     expect(table.$('thead th:first').attr('class')).toEqual('sortable sorted-desc');
-                    expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('30');
+                    expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('10');
                     expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
-                    expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
+                    expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('30');
                 });
-                it('can use custom sorting', function(){
-                    var sorter = sinon.spy(function(data, fieldName, direction, fn){
-                            fn(undefined, data);
+                it('calls fetch override with sort parameters', function(){
+                    var fetchSpy = sinon.spy(function(options, callback){
+                            callback({items: data});
                         }),
                         data;
 
                     table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: false}
-                    ], {plugins: [sortable]});
+                    ], {plugins: [sortable], fetch: fetchSpy}),
 
-                    table.sortable.sorter = sorter;
                     table.load(data = [
                         {column1: 30, column2: 200},
                         {column1: 10, column2: 400},
@@ -1135,13 +1189,13 @@ define([
                     table.$('thead th:first a.sort').click();
                     table.$('thead th:first a.sort').click();
 
-                    expect(sorter.calledTwice).toEqual(true);
-                    expect(sorter.args[0][0]).toEqual(data);
-                    expect(sorter.args[0][1]).toEqual('column1');
-                    expect(sorter.args[0][2]).toEqual('desc');
-                    expect(sorter.args[1][0]).toEqual(data);
-                    expect(sorter.args[1][1]).toEqual('column1');
-                    expect(sorter.args[1][2]).toEqual('asc');
+                    expect(fetchSpy.calledThrice).toEqual(true);
+                    expect(fetchSpy.args[0][0].sortField).not.toBeDefined();
+                    expect(fetchSpy.args[0][0].sortDirection).not.toBeDefined();
+                    expect(fetchSpy.args[1][0].sortField).toEqual('column1');
+                    expect(fetchSpy.args[1][0].sortDirection).toEqual('desc');
+                    expect(fetchSpy.args[2][0].sortField).toEqual('column1');
+                    expect(fetchSpy.args[2][0].sortDirection).toEqual('asc');
                 });
                 it('adds sortable classes to fields added after the table is initialised', function(){
                     table = tabler.create([{field: 'column1', sortable: true}], {plugins: [sortable]});
@@ -1255,6 +1309,7 @@ define([
                             table.render();
                         });
                         it('renders the current page li', function(){
+                            expect(table.$('tfoot ol.pager li.current').length).toEqual(1);
                             expect(table.$('tfoot ol.pager li.current').text()).toEqual('1');
                             expect(table.$('tfoot ol.pager li.current').data('page')).toEqual(0);
                         });
@@ -1470,26 +1525,26 @@ define([
                     });
                 });
                 describe('works with server-side paging', function(){
-                    var pagerSpy;
+                    var fetchSpy;
                     beforeEach(function(){
                         table.pager.pageSize = 2;
-                        table.render();
 
-                        pagerSpy = sinon.spy(function(data, pageOptions, done){
-                            done(data);
+                        table.fetch = fetchSpy = sinon.spy(function(options, done){
+                            done({items: [], totalResults: 5});
                         });
-                        table.pager.pager = pagerSpy;
+
+                        table.render();
                     });
-                    it('runs a callback for paging when supplied', function(){
+                    it('calls fetch override with correct paging options', function(){
+                        expect(table.$('tfoot ol.pager li.next').length).toEqual(1);
+
                         table.$('tfoot ol.pager li.next').click();
 
-                        expect(pagerSpy.calledOnce).toEqual(true);
-                        expect(pagerSpy.args[0][0]).toEqual(table.data);
-                        expect(pagerSpy.args[0][1]).toEqual({
-                            currentPage: 1,
-                            pageSize: 2,
-                            totalResults: 5
-                        });
+                        expect(fetchSpy.calledTwice).toEqual(true);
+                        expect(fetchSpy.args[0][0].currentPage).toEqual(0);
+                        expect(fetchSpy.args[0][0].pageSize).toEqual(2);
+                        expect(fetchSpy.args[1][0].currentPage).toEqual(1);
+                        expect(fetchSpy.args[1][0].pageSize).toEqual(2);
                     });
                 });
                 describe('standalone', function(){
@@ -1514,16 +1569,15 @@ define([
                     });
                     it('can be used without a tabler instance', function(){
                         var Pager = pager,
-                            pagerSpy = sinon.spy(function(data, pageOptions, callback){
-                                callback(data);
+                            fetchSpy = sinon.spy(function(options, callback){
+                                callback({items: []});
                             }),
-                            p = new Pager({
-                                pager: pagerSpy
-                            }),
+                            p = new Pager(),
                             $el = $('<div />');
 
                         p.attach({
-                            $el: $el
+                            $el: $el,
+                            fetch: fetchSpy
                         });
 
                         p.totalResults = 300;
@@ -1533,7 +1587,9 @@ define([
                         $el.find('li:eq(3)').click();
 
                         expect(p.currentPage).toEqual(3);
-                        expect(pagerSpy.calledOnce).toEqual(true);
+                        expect(fetchSpy.calledOnce).toEqual(true);
+                        expect(fetchSpy.args[0][0].currentPage).toEqual(3);
+                        expect(fetchSpy.args[0][0].pageSize).toEqual(20);
                     });
                 });
             });
