@@ -9,6 +9,12 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$el.hasClass('testClass')).toEqual(true);
             });
 
+            it('uses the first argument to create as options if its an object', function(){
+                var table = tabler.create({className: 'testClass'});
+
+                expect(table.$el.hasClass('testClass')).toEqual(true);
+            });
+
             it('renders as a table with rows from results', function(){
                 var table = tabler.create();
 
