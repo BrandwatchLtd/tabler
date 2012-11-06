@@ -115,6 +115,9 @@
                         ], {
                             className: 'table',
                             plugins: [tabler.pager],
+                            pager: {
+                                pageSize: 5
+                            },
                             fetch: function(options, done){
                                 $.ajax({
                                     url: 'http://api.rottentomatoes.com/api/public/v1.0/movies.json',
@@ -123,7 +126,7 @@
                                         apikey: RT_API_KEY,
                                         q: 'Die Hard',
                                         page_limit: 5,
-                                        page: 1
+                                        page: options.currentPage + 1
                                     }
                                 }).success(function(data){
                                     done({
