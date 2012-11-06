@@ -418,11 +418,12 @@ define([
                 TestPlugin.pluginName = 'testPlugin';
                 TestPlugin.prototype.attach = sinon.spy();
 
-                table = tabler.create([], {plugins: [TestPlugin]});
+                table = tabler.create([], {plugins: [TestPlugin], testPlugin: {property1: true}});
 
                 expect(table.testPlugin).toBeDefined();
                 expect(TestPlugin.prototype.attach.calledOnce).toEqual(true);
                 expect(TestPlugin.prototype.attach.args[0][0]).toEqual(table);
+                expect(table.testPlugin.options).toEqual({property1: true});
             });
             it('can add plugins', function(){
                 table = tabler.create();
