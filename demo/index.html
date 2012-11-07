@@ -6,13 +6,23 @@
 
         <script src="jquery-1.7.1.js"></script>
         <script src="underscore.js"></script>
-        <script src="/lib/tabler/tabler.js"></script>
-        <script src="/lib/tabler/tabler.pager.js"></script>
+        <script src="../lib/tabler/tabler.js"></script>
+        <script src="../lib/tabler/tabler.pager.js"></script>
+        <script src="../lib/tabler/tabler.infiniTable.js"></script>
 
         <script>
             // Use your own key!
             RT_API_KEY = 'uht2fj2a3erk5tgkn6cm3m38';
         </script>
+        <style>
+        .scroll{
+            overflow-y:scroll;
+            height:300px;
+        }
+        .thumbnail{
+            height:91px;
+        }
+        </style>
     </head>
     <body>
         <div class="container">
@@ -66,14 +76,14 @@
 
             <div id="ajax-table">
                 <h2>Table with ajax data <a href="#ajax-table" class="icon-tag"></a></h2>
-                <div id="ajaxTable"></div>
+                <div id="ajaxTable" class="scroll"></div>
 
                 <script>
                     var ajaxTable = tabler.create([
                             {field:'title', name: 'Name'},
                             {field:'year', name: 'Year'},
                             {field:'posters', name: 'Poster', formatter: function(data){
-                                return '<img src="' + data.thumbnail + '" />';
+                                return '<img src="' + data.thumbnail + '" class="thumbnail" />';
                             }}
                         ], {
                             className: 'table',
@@ -84,7 +94,7 @@
                                     data: {
                                         apikey: RT_API_KEY,
                                         q: 'Die Hard',
-                                        page_limit: 5,
+                                        page_limit: 50,
                                         page: 1
                                     }
                                 }).success(function(data){
@@ -110,7 +120,7 @@
                             {field:'title', name: 'Name'},
                             {field:'year', name: 'Year'},
                             {field:'posters', name: 'Poster', formatter: function(data){
-                                return '<img src="' + data.thumbnail + '" />';
+                                return '<img src="' + data.thumbnail + '" class="thumbnail" />';
                             }}
                         ], {
                             className: 'table',
@@ -140,6 +150,49 @@
                     pagedTable.render();
 
                     $('#pagedTable').html(pagedTable.$el);
+                </script>
+            </div>
+
+            <div id="infini-table">
+                <h2>Table with infinite scroll <a href="#infini-table" class="icon-tag"></a></h2>
+                <div id="infiniTable" class="scroll"></div>
+
+                <script>
+                    var infiniTable = tabler.create([
+                            {field:'title', name: 'Name'},
+                            {field:'year', name: 'Year'},
+                            {field:'posters', name: 'Poster', formatter: function(data){
+                                return '<img src="' + data.thumbnail + '" class="thumbnail" />';
+                            }}
+                        ], {
+                            className: 'table',
+                            plugins: [tabler.pager, tabler.infiniTable],
+                            pager: {
+                                pageSize: 5
+                            },
+                            fetch: function(options, done){
+                                $.ajax({
+                                    url: 'http://api.rottentomatoes.com/api/public/v1.0/movies.json',
+                                    dataType: 'jsonp',
+                                    data: {
+                                        apikey: RT_API_KEY,
+                                        q: 'Die Hard',
+                                        page_limit: 5,
+                                        page: options.currentPage + 1
+                                    }
+                                }).success(function(data){
+                                    done({
+                                        totalResults: data.total,
+                                        pageSize: options.pageSize,
+                                        items: data.movies
+                                    });
+                                });
+                            }
+                        });
+
+                    infiniTable.render();
+
+                    $('#infiniTable').html(infiniTable.$el);
                 </script>
             </div>
         </div>

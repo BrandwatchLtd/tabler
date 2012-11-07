@@ -7,7 +7,8 @@ define([
         'lib/tabler/tabler.pager',
         'lib/tabler/tabler.pageSize',
         'lib/tabler/tabler.jumpToPage',
-        'lib/tabler/tabler.removeColumns'],
+        'lib/tabler/tabler.removeColumns',
+	'lib/tabler/tabler.infiniTable'],
     function(tabler,
         columnGrouper,
         aggregator,
@@ -16,7 +17,8 @@ define([
         pager,
         pageSize,
         jumpToPage,
-        removeColumns){
+        removeColumns,
+	infiniTable){
     'use strict';
     describe('tabler', function(){
         var table;
@@ -1908,6 +1910,107 @@ define([
                     table.$('thead tr.columnGroups th:eq(0) a.removeColumn').click();
 
                     expect(columnsToggledSpy.calledOnce).toEqual(true);
+                });
+            });
+            describe('infiniTable', function(){
+                var table, fetchSpy, $div;
+                beforeEach(function(){
+                    $div = $('<div />')
+                        .css({
+                            height: 200,
+                            overflow: 'auto'
+                        })
+                        .appendTo('body');
+                    table = tabler.create([
+                        {field: "column1", groupName: 'Group 1', title: 'column1'},
+                        {field: "column2", groupName: 'Group 1', title: 'column1'},
+                        {field: "column3", groupName: 'Group 1', title: 'column1'},
+                        {field: "column4", groupName: 'Group 2', title: ''},
+                        {field: "column5", groupName: 'Group 2', title: 'column1', toggleable: false}
+                    ], {plugins: [pager, infiniTable]}, {pager: {pageSize: 20}});
+                    fetchSpy = sinon.spy(table, 'fetch');
+
+                    table.$el.appendTo($div);
+
+                    table.load(_(_.range(50)).map(function(i){
+                                return {column1: '1-' + (i+1), column2: '2-' + (i+1), column3: '3-' + (i+1), column4: '4-' + (i+1), column5: '5-' + (i+1)};
+                            }));
+                    table.render();
+                });
+                afterEach(function(){
+                    $div.remove();
+                });
+                it('depends on the paging plugin', function(){
+                    var err;
+                    try{
+                        table = tabler.create({plugins: [infiniTable]});
+                    }catch(e){
+                        err = e;
+                    }
+                    expect(err).toBeDefined();
+                    expect(err.message).toEqual('infiniTable plugin cannot be used without the pager plugin');
+                });
+                it('only fetches one set of data at first', function(){
+                    expect(fetchSpy.calledOnce).toEqual(true);
+                });
+                it('renders "Loading more" text instead of page links', function(){
+                    expect(table.$('tfoot tr').length).toEqual(1);
+                    expect(table.$('tfoot td').length).toEqual(1);
+                    expect(table.$('tfoot td').attr('colspan')).toEqual('5');
+                    expect(table.$('tfoot td *').length).toEqual(1);
+                    expect(table.$('tfoot td span').text()).toEqual('Loading more...');
+                    expect(table.$('tfoot td span').hasClass('loading')).toEqual(true);
+                });
+                it('loads more data when "Loading more" text scrolls into view', function(){
+                    fetchSpy.reset();
+
+                    $div.scrollTop(1000).scroll();
+
+                    expect(fetchSpy.calledOnce).toEqual(true);
+
+                    fetchSpy.restore();
+                });
+                it('does not load more data when container is scrolled and "Loading more" message is not in view', function(){
+                    fetchSpy.reset();
+
+                    $div.scrollTop(1).scroll();
+
+                    expect(fetchSpy.called).toEqual(false);
+
+                    fetchSpy.restore();
+                });
+                it('renders fetched data after existing data in table', function(){
+                    $div.scrollTop(1000).scroll();
+
+                    expect(table.$('tbody tr').length).toEqual(40);
+                });
+                it('removes "Loading more" text when no more pages of data to load', function(){
+                    $div.scrollTop(1000).scroll();
+                    $div.scrollTop(1000).scroll();
+                    $div.scrollTop(1000).scroll();
+
+                    expect(table.$('tbody tr').length).toEqual(50);
+                    expect(table.$('tfoot').length).toEqual(0);
+                });
+                it('renders more pages correctly when fetch is overridden on the table', function(){
+                    table.fetch = function(options, callback){
+                        callback({
+                            totalResults: 25,
+                            items: [
+                                {column1: '1-1', column2: '2-1', column3: '3-1', column4: '4-1', column5: '5-1'},
+                                {column1: '1-2', column2: '2-2', column3: '3-2', column4: '4-2', column5: '5-2'},
+                                {column1: '1-3', column2: '2-3', column3: '3-3', column4: '4-3', column5: '5-3'},
+                                {column1: '1-4', column2: '2-4', column3: '3-4', column4: '4-4', column5: '5-4'},
+                                {column1: '1-5', column2: '2-5', column3: '3-5', column4: '4-5', column5: '5-5'}
+                            ]
+                        });
+                    };
+
+                    $div.scrollTop(1000).scroll();
+
+                    expect(table.$('tbody tr').length).toEqual(25);
+
+                    //$div = $(); // Testing so don't want to remove the real $div
                 });
             });
         });
