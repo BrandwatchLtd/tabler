@@ -16,6 +16,7 @@
     <style>
         body{
             background-color:#FFF !important;
+            font-size:14px;
             max-width:770px;
             margin-right:260px;
         }
@@ -33,6 +34,11 @@
     <div id="mocha"></div>
 
     <script>
+            },
+            shim: {
+                'underscore': {
+                    exports: '_'
+                }
         if(!window.console){
             window.console = {
                 log: function(){},
