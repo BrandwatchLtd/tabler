@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Tabler by BrandwatchLtd</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Tabler</h1>
+        <p class="header">Client-side table generation</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/BrandwatchLtd/tabler/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/BrandwatchLtd/tabler/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/BrandwatchLtd/tabler">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/BrandwatchLtd">BrandwatchLtd</a></p>
+
+
+      </header>
+      <section>
+        <h1>Tabler.js</h1>
+
+<p>A lightweight library for building dynamic tables.</p>
+
+<h2>Usage</h2>
+
+<p>Tabler works as an AMD module or standalone</p>
+
+<h3>AMD</h3>
+
+<pre><code>define(['lib/tabler/tabler', 'lib/tabler/tabler.sortable'], function(tabler, sortable){
+    // Your module code
+    var table = tabler.create(columns, {plugins: [sortable]});
+
+    table.load([..data..]);
+    table.render();
+
+    $(..el..).append(table.$el);
+    // More your module code
+});
+</code></pre>
+
+<h3>Standalone</h3>
+
+<p>Just reference the scripts directly, ensuring any plugins are added <em>after</em> the tabler.js script itself.</p>
+
+<p>Tabler will be available via the <code>tabler</code> global object.  The plugins will hang off <code>tabler.pluginName</code>.</p>
+
+<h2>Configuration</h2>
+
+<p>Configuration for the table iself is done through the specs passed to the <code>tabler.create()</code> method, a typical example:</p>
+
+<pre><code>var table = tabler.create([
+    {field: 'name', name: 'Name'},
+    {field: 'apples', name: '# Apples'},
+    {field: 'bananas', name: '# Bananas'}
+]);
+
+table.load([
+    {name: 'Steve', apples: 2, bananas: 4},
+    {name: 'Graham', apples: 1, bananas: 6},
+    {name: 'Dan', apples: 9, bananas: 2},
+    {name: 'Jon', apples: 5, bananas: 6}
+]);
+table.render();
+</code></pre>
+
+<p>The Default set of configuration parameters are:</p>
+
+<ul>
+<li>id: A unique ID for the row, if not specified then one will be generated from either the <code>field</code> or <code>name</code> property (in that order).  If an ID is not unique, then an error will be thrown.</li>
+<li>field: The field from each row to render</li>
+<li>name: The title for the column that will appear in the header. If you do not specify a name attribute for any column then the table will not have any columns</li>
+<li>formatter: A function(row, colSpec) that returns formatted data for the row (eg wrap each number in a link)</li>
+<li>headerFormatter: A function(colSpec) that returns formatted data for the column header (eg wrapped in a link)</li>
+<li>disabled: true/false whether the table should render the column at all</li>
+</ul><p>Plugins may add support for additional parameters (see below)</p>
+
+<h2>Using Plugins</h2>
+
+<p>Simply pass the plugins as the second parameter of the <code>create</code> method:</p>
+
+<pre><code>var table = tabler.create([..spec..], {plugins: [sortable]});
+
+// table.pager and table.sortable are now available and automatically applied on the next call to `render`
+</code></pre>
+
+<p>Or add plugins later on:</p>
+
+<pre><code>table.addPlugin(pager, {pageSize: 10, currentPage: 0})
+</code></pre>
+
+<p>The included plugins are also AMD modules and should be required in the same manner as the main module.</p>
+
+<p>As you can see, plugin options cannot currently be specified when calling the create method.  You can set these after the fact instead (eg table.pager.options.pageSize or table.sortable.sorter)</p>
+
+<h2>Included Plugins</h2>
+
+<p>Tabler has a number of plugins that come out-of-the-box:</p>
+
+<h3>Aggregator</h3>
+
+<p>Allows you to add an aggregator function on each column which can perform calculations, the function runs for each column of the data and runs a reduce-like function on it, displaying the final result in the footer of the table</p>
+
+<pre><code>function totaliser(memo, value){
+    return (memo || 0) + value;
+}
+
+var table = tabler.create([
+    {name: 'Apples', field: 'apples', aggregator: totaliser}
+]);
+table.render();
+
+// The Apples tfoot td now has the total of all apples cells
+</code></pre>
+
+<h3>Column Grouper</h3>
+
+<p>Allows you to group columns</p>
+
+<pre><code>var table = tabler.create([
+    {field: 'name', name: 'Name'},
+    {field: 'apples', name: '# Apples', columnGroup: 'Fruit'},
+    {field: 'bananas', name: '# Bananas', columnGroup: 'Fruit'}
+]);
+table.render();
+
+The table will now have a th spanning the second and third column with the content "Fruit"
+</code></pre>
+
+<h3>Pager</h3>
+
+<p>Adds a pager to the footer of the table, with next/prev/first/last links &amp; client-side paging capabilities (by default)</p>
+
+<pre><code>table.addPlugin(pager, {
+    pageSize: 20,
+    currentPage: 1
+});
+table.render();
+</code></pre>
+
+<p>Options:</p>
+
+<ul>
+<li>pageSize: The size of each page</li>
+<li>currentPage: The current page index, 0-based</li>
+<li>totalResults: The total number of results (useful for server-side paging)</li>
+<li>pager: [optional] function(data, pageOptions, callback) that can be passed in to perform server-side paging (run the callback when done)</li>
+</ul><h3>PageSize</h3>
+
+<p>Adds a simple page size dropdown to the pager footer row (requires pager plugin)</p>
+
+<pre><code>table.addPlugin(pageSize, {sizes: [10, 25, 50]});
+</code></pre>
+
+<p>If the <code>sizes</code> option is not passed in, then a default set of sizes of [20, 50, 100] is used</p>
+
+<h3>Sortable</h3>
+
+<p>Adds anchors to designated column headers, making them sortable on click</p>
+
+<pre><code>var table = tabler.create([
+    {field: 'name', name: 'Name'},
+    {field: 'apples', name: '# Apples', columnGroup: 'Fruit', sortable: true},
+    {field: 'bananas', name: '# Bananas', columnGroup: 'Fruit', sortable: true}
+]);
+</code></pre>
+
+<p>Options:</p>
+
+<ul>
+<li>sorter: function(data, field, dir, callback) that can perform server-side sorting (run the callback when done)</li>
+</ul><h3>toggleColumns</h3>
+
+<p>This adds a "Columns" button into the table header, which when clicked allows the user to choose which columns to show/hide.</p>
+
+<p>Internally, hiding a column is the same as setting <code>disabled: true</code> on it. Columns can be opted out of being toggleable by setting <code>toggleable: false</code> on the spec.</p>
+
+<h3>jumpToPage</h3>
+
+<p>Used in conjunction with the pager plugin, adds a "Jump to page" input box into the pager row, which allows the user to jump directly to a specific page of results.</p>
+
+<h3>removeColumns</h3>
+
+<p>Adds an "x" link to each toggleable column header and column group, which disables the column when clicked</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
