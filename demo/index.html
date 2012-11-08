@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tabler demos</title>
+        <link href="css/bootstrap.css" type="text/css" rel="stylesheet" />
+
+        <script src="jquery-1.7.1.js"></script>
+        <script src="underscore.js"></script>
+        <script src="../lib/tabler/tabler.js"></script>
+        <script src="../lib/tabler/tabler.pager.js"></script>
+        <script src="../lib/tabler/tabler.infiniTable.js"></script>
+
+        <script>
+            // Use your own key!
+            RT_API_KEY = 'uht2fj2a3erk5tgkn6cm3m38';
+        </script>
+        <style>
+        .scroll{
+            overflow-y:scroll;
+            height:300px;
+        }
+        .thumbnail{
+            height:91px;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Tabler demos</h1>
+
+            <div id="simple-dynamic-table">
+                <h2>Simple table (dynamic spec) <a href="#simple-dynamic-table" class="icon-tag"></a></h2>
+                <div id="table1"></div>
+
+                <script>
+                    var table1 = tabler.create({
+                        className: 'table'
+                    });
+
+                    table1.load([
+                        {column1: 'Value 1', column2: 'Value 1'},
+                        {column1: 'Value 2', column2: 'Value 2'},
+                        {column1: 'Value 3', column2: 'Value 3'},
+                        {column1: 'Value 4', column2: 'Value 4'},
+                        {column1: 'Value 5', column2: 'Value 5'}
+                    ]);
+                    table1.render();
+
+                    $('#table1').html(table1.$el);
+                </script>
+            </div>
+
+            <div id="simple-custom-table">
+                <h2>Simple table (custom spec) <a href="#simple-custom-table" class="icon-tag"></a></h2>
+                <div id="table2"></div>
+
+                <script>
+                    var table2 = tabler.create([
+                        {field: 'column1'}
+                    ], {
+                        className: 'table'
+                    });
+
+                    table2.load([
+                        {column1: 'Value 1', column2: 'Value 1'},
+                        {column1: 'Value 2', column2: 'Value 2'},
+                        {column1: 'Value 3', column2: 'Value 3'},
+                        {column1: 'Value 4', column2: 'Value 4'},
+                        {column1: 'Value 5', column2: 'Value 5'}
+                    ]);
+                    table2.render();
+
+                    $('#table2').html(table2.$el);
+                </script>
+            </div>
+
+            <div id="ajax-table">
+                <h2>Table with ajax data <a href="#ajax-table" class="icon-tag"></a></h2>
+                <div id="ajaxTable" class="scroll"></div>
+
+                <script>
+                    var ajaxTable = tabler.create([
+                            {field:'title', name: 'Name'},
+                            {field:'year', name: 'Year'},
+                            {field:'posters', name: 'Poster', formatter: function(data){
+                                return '<img src="' + data.thumbnail + '" class="thumbnail" />';
+                            }}
+                        ], {
+                            className: 'table',
+                            fetch: function(options, done){
+                                $.ajax({
+                                    url: 'http://api.rottentomatoes.com/api/public/v1.0/movies.json',
+                                    dataType: 'jsonp',
+                                    data: {
+                                        apikey: RT_API_KEY,
+                                        q: 'Die Hard',
+                                        page_limit: 50,
+                                        page: 1
+                                    }
+                                }).success(function(data){
+                                    done({
+                                        totalResults: data.total,
+                                        items: data.movies
+                                    });
+                                });
+                            }
+                        });
+                    ajaxTable.render();
+
+                    $('#ajaxTable').html(ajaxTable.$el);
+                </script>
+            </div>
+
+            <div id="paged-table">
+                <h2>Table with pager  <a href="#paged-table" class="icon-tag"></a></h2>
+                <div id="pagedTable"></div>
+
+                <script>
+                    var pagedTable = tabler.create([
+                            {field:'title', name: 'Name'},
+                            {field:'year', name: 'Year'},
+                            {field:'posters', name: 'Poster', formatter: function(data){
+                                return '<img src="' + data.thumbnail + '" class="thumbnail" />';
+                            }}
+                        ], {
+                            className: 'table',
+                            plugins: [tabler.pager],
+                            pager: {
+                                pageSize: 5
+                            },
+                            fetch: function(options, done){
+                                $.ajax({
+                                    url: 'http://api.rottentomatoes.com/api/public/v1.0/movies.json',
+                                    dataType: 'jsonp',
+                                    data: {
+                                        apikey: RT_API_KEY,
+                                        q: 'Die Hard',
+                                        page_limit: 5,
+                                        page: options.currentPage + 1
+                                    }
+                                }).success(function(data){
+                                    done({
+                                        totalResults: data.total,
+                                        pageSize: options.pageSize,
+                                        items: data.movies
+                                    });
+                                });
+                            }
+                        });
+                    pagedTable.render();
+
+                    $('#pagedTable').html(pagedTable.$el);
+                </script>
+            </div>
+
+            <div id="infini-table">
+                <h2>Table with infinite scroll <a href="#infini-table" class="icon-tag"></a></h2>
+                <div id="infiniTable" class="scroll"></div>
+
+                <script>
+                    var infiniTable = tabler.create([
+                            {field:'title', name: 'Name'},
+                            {field:'year', name: 'Year'},
+                            {field:'posters', name: 'Poster', formatter: function(data){
+                                return '<img src="' + data.thumbnail + '" class="thumbnail" />';
+                            }}
+                        ], {
+                            className: 'table',
+                            plugins: [tabler.pager, tabler.infiniTable],
+                            pager: {
+                                pageSize: 5
+                            },
+                            fetch: function(options, done){
+                                $.ajax({
+                                    url: 'http://api.rottentomatoes.com/api/public/v1.0/movies.json',
+                                    dataType: 'jsonp',
+                                    data: {
+                                        apikey: RT_API_KEY,
+                                        q: 'Die Hard',
+                                        page_limit: 5,
+                                        page: options.currentPage + 1
+                                    }
+                                }).success(function(data){
+                                    done({
+                                        totalResults: data.total,
+                                        pageSize: options.pageSize,
+                                        items: data.movies
+                                    });
+                                });
+                            }
+                        });
+
+                    infiniTable.render();
+
+                    $('#infiniTable').html(infiniTable.$el);
+                </script>
+            </div>
+        </div>
+
+        <script>
+            $('.container script').each(function(i, el){
+                var script = $(el);
+
+                script.before('<pre>\n' + _.escape(script.text().replace(/^[ ]{20}/gm, '')).trim() + '\n</pre>');
+            });
+        </script>
+
+    </body>
+</html>
