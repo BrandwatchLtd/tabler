@@ -2003,6 +2003,15 @@ define([
                     expect(table.$('tbody tr').length).toEqual(100);
                     expect(table.$('tfoot').length).toEqual(0);
                 });
+                it('Immediately loads more data if the loading message is visible on load', function(){
+                    $div.css('height', 700);
+
+                    fetchSpy.reset();
+
+                    table.render();
+
+                    expect(fetchSpy.callCount).toEqual(2);
+                });
                 xit('renders only the page of data that is currently visible', function(){
                     fetchSpy.reset();
 
