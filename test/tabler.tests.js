@@ -2049,6 +2049,15 @@ define([
 
                     expect(table.$('tbody tr').length).toEqual(25);
                 });
+                it('clears out data and paging when reset method called', function(){
+                    fetchSpy.reset();
+
+                    table.infiniTable.reset();
+                    table.render();
+
+                    expect(table.$('tbody tr').length).toEqual(0);
+                    expect(fetchSpy.calledOnce).toEqual(true);
+                });
             });
         });
     });
