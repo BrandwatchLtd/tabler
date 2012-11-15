@@ -18,7 +18,7 @@ define([
         pageSize,
         jumpToPage,
         removeColumns,
-	infiniTable){
+        infiniTable){
     'use strict';
     describe('tabler', function(){
         var table;
@@ -1922,20 +1922,28 @@ define([
                         })
                         .appendTo('body');
                     table = tabler.create([
-                        {field: "column1", groupName: 'Group 1', title: 'column1'},
-                        {field: "column2", groupName: 'Group 1', title: 'column1'},
-                        {field: "column3", groupName: 'Group 1', title: 'column1'},
-                        {field: "column4", groupName: 'Group 2', title: ''},
-                        {field: "column5", groupName: 'Group 2', title: 'column1', toggleable: false}
+                        {field: 'column1', groupName: 'Group 1', title: 'column1'},
+                        {field: 'column2', groupName: 'Group 1', title: 'column1'},
+                        {field: 'column3', groupName: 'Group 1', title: 'column1'},
+                        {field: 'column4', groupName: 'Group 2', title: ''},
+                        {field: 'column5', groupName: 'Group 2', title: 'column1', toggleable: false}
                     ], {plugins: [pager, infiniTable]}, {pager: {pageSize: 20}});
                     fetchSpy = sinon.spy(table, 'fetch');
 
                     table.$el.appendTo($div);
 
-                    table.load(_(_.range(50)).map(function(i){
-                                return {column1: '1-' + (i+1), column2: '2-' + (i+1), column3: '3-' + (i+1), column4: '4-' + (i+1), column5: '5-' + (i+1)};
+                    table.load(_(_.range(100)).map(function(i){
+                                return {
+                                    column1: '1-' + (i+1),
+                                    column2: '2-' + (i+1),
+                                    column3: '3-' + (i+1),
+                                    column4: '4-' + (i+1),
+                                    column5: '5-' + (i+1)
+                                };
                             }));
                     table.render();
+
+                    table.$('td').height(25);
                 });
                 afterEach(function(){
                     $div.remove();
@@ -1964,7 +1972,7 @@ define([
                 it('loads more data when "Loading more" text scrolls into view', function(){
                     fetchSpy.reset();
 
-                    $div.scrollTop(1000).scroll();
+                    $div.scrollTop(150).scroll();
 
                     expect(fetchSpy.calledOnce).toEqual(true);
 
@@ -1973,24 +1981,46 @@ define([
                 it('does not load more data when container is scrolled and "Loading more" message is not in view', function(){
                     fetchSpy.reset();
 
+                    $div.scrollTop(150).scroll();
                     $div.scrollTop(1).scroll();
 
-                    expect(fetchSpy.called).toEqual(false);
+                    expect(fetchSpy.calledOnce).toEqual(true);
 
                     fetchSpy.restore();
                 });
                 it('renders fetched data after existing data in table', function(){
-                    $div.scrollTop(1000).scroll();
+                    $div.scrollTop(150).scroll();
 
                     expect(table.$('tbody tr').length).toEqual(40);
                 });
                 it('removes "Loading more" text when no more pages of data to load', function(){
-                    $div.scrollTop(1000).scroll();
-                    $div.scrollTop(1000).scroll();
-                    $div.scrollTop(1000).scroll();
+                    $div.scrollTop(700).scroll();
+                    $div.scrollTop(700).scroll();
+                    $div.scrollTop(700).scroll();
+                    $div.scrollTop(700).scroll();
+                    $div.scrollTop(700).scroll();
 
-                    expect(table.$('tbody tr').length).toEqual(50);
+                    expect(table.$('tbody tr').length).toEqual(100);
                     expect(table.$('tfoot').length).toEqual(0);
+                });
+                xit('renders only the page of data that is currently visible', function(){
+                    fetchSpy.reset();
+
+                    $div.scrollTop(5000).scroll();
+
+                    expect(fetchSpy.calledOnce).toEqual(true);
+                    expect(fetchSpy.args[0][0].currentPage).toEqual(5);
+
+                    // $div = $(); // Testing so don't want to remove the real $div
+                });
+                it('clears out old pages when data re-loaded', function(){
+                    table.load([
+                        {column1: '1-1', column2: '2-1', column3: '3-1', column4: '4-1', column5: '5-1'},
+                        {column1: '1-2', column2: '2-2', column3: '3-2', column4: '4-2', column5: '5-2'}
+                    ]);
+                    table.render();
+
+                    expect(table.$('tbody tr').length).toEqual(2);
                 });
                 it('renders more pages correctly when fetch is overridden on the table', function(){
                     table.fetch = function(options, callback){
@@ -2009,17 +2039,6 @@ define([
                     $div.scrollTop(1000).scroll();
 
                     expect(table.$('tbody tr').length).toEqual(25);
-                });
-                it('clears out old pages when data re-loaded', function(){
-                    table.load([
-                        {column1: '1-1', column2: '2-1', column3: '3-1', column4: '4-1', column5: '5-1'},
-                        {column1: '1-2', column2: '2-2', column3: '3-2', column4: '4-2', column5: '5-2'}
-                    ]);
-                    table.render();
-
-                    expect(table.$('tbody tr').length).toEqual(2);
-
-                    // $div = $(); // Testing so don't want to remove the real $div
                 });
             });
         });
