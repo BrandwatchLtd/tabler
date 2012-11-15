@@ -1270,6 +1270,21 @@ define([
                     expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('1e');
                     expect(table.$('tbody tr').eq(0).find('td').eq(1).text()).toEqual('2e');
                 });
+                it('triggers "paged" events on clicking page links', function(){
+                    var pagedSpy = sinon.spy();
+
+                    table.bind('paged', pagedSpy);
+                    table.pager.pageSize = 2;
+                    table.render();
+
+                    table.$('tfoot tr td ol.pager li[data-page=1]').click();
+
+                    expect(pagedSpy.calledOnce).toEqual(true);
+                    expect(pagedSpy.args[0][0]).toEqual({
+                        currentPage: 1,
+                        pageSize: 2
+                    });
+                });
                 it('renders Previous link when on page > 1', function(){
                     table.pager.pageSize = 2;
 
