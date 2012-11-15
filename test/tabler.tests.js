@@ -2009,8 +2009,17 @@ define([
                     $div.scrollTop(1000).scroll();
 
                     expect(table.$('tbody tr').length).toEqual(25);
+                });
+                it('clears out old pages when data re-loaded', function(){
+                    table.load([
+                        {column1: '1-1', column2: '2-1', column3: '3-1', column4: '4-1', column5: '5-1'},
+                        {column1: '1-2', column2: '2-2', column3: '3-2', column4: '4-2', column5: '5-2'}
+                    ]);
+                    table.render();
 
-                    //$div = $(); // Testing so don't want to remove the real $div
+                    expect(table.$('tbody tr').length).toEqual(2);
+
+                    // $div = $(); // Testing so don't want to remove the real $div
                 });
             });
         });
