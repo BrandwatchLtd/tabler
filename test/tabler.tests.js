@@ -1094,7 +1094,7 @@ define([
                     ], {plugins: [sortable]});
 
                     table.sortable.field = 'column1';
-                    table.sortable.dir = 'desc';
+                    table.sortable.direction = 'desc';
 
                     table.load([
                         {column1: 30, column2: 200},
@@ -1115,7 +1115,7 @@ define([
                     ], {plugins: [sortable]});
 
                     table.sortable.field = 'column1';
-                    table.sortable.dir = 'desc';
+                    table.sortable.direction = 'desc';
 
                     table.load([
                         {column1: 30, column2: 200},
@@ -1125,7 +1125,7 @@ define([
                     table.render();
 
                     delete table.sortable.field;
-                    delete table.sortable.dir;
+                    delete table.sortable.direction;
                     table.render();
 
                     expect(table.$('thead th').eq(0).attr('class')).toEqual('sortable');
@@ -1155,7 +1155,7 @@ define([
                     ], {plugins: [sortable]});
 
                     table.sortable.field = 'column1';
-                    table.sortable.dir = 'descending';
+                    table.sortable.direction = 'descending';
 
                     table.load([
                         {column1: 30, column2: 200},
@@ -1191,12 +1191,12 @@ define([
                     table.$('thead th:first a.sort').click();
 
                     expect(fetchSpy.calledThrice).toEqual(true);
-                    expect(fetchSpy.args[0][0].sortField).not.toBeDefined();
-                    expect(fetchSpy.args[0][0].sortDirection).not.toBeDefined();
-                    expect(fetchSpy.args[1][0].sortField).toEqual('column1');
-                    expect(fetchSpy.args[1][0].sortDirection).toEqual('desc');
-                    expect(fetchSpy.args[2][0].sortField).toEqual('column1');
-                    expect(fetchSpy.args[2][0].sortDirection).toEqual('asc');
+                    expect(fetchSpy.args[0][0].field).not.toBeDefined();
+                    expect(fetchSpy.args[0][0].direction).not.toBeDefined();
+                    expect(fetchSpy.args[1][0].field).toEqual('column1');
+                    expect(fetchSpy.args[1][0].direction).toEqual('desc');
+                    expect(fetchSpy.args[2][0].field).toEqual('column1');
+                    expect(fetchSpy.args[2][0].direction).toEqual('asc');
                 });
                 it('adds sortable classes to fields added after the table is initialised', function(){
                     table = tabler.create([{field: 'column1', sortable: true}], {plugins: [sortable]});
