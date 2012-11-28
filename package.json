@@ -6,6 +6,12 @@
     "type": "git",
     "url": "git://github.com/BrandwatchLtd/tabler.git"
   },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
   "dependencies": {},
   "devDependencies": {
     "serve": "*"
