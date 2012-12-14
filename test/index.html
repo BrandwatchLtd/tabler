@@ -4,13 +4,12 @@
 <!--[if IE 8 ]>    <html class="no-js ie ie8"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
-    <title>Jasmine Test Runner</title>
+    <title>Tabler Test Runner</title>
 
-    <link rel="stylesheet" href="jasmine/jasmine.css">
-    <link rel="favicon" href="jasmine/jasmine_favicon.ico">
+    <link rel="stylesheet" href="lib/mocha/mocha.css" />
 
-    <script src="jasmine/jasmine.js"></script>
-    <script src="jasmine/jasmine-html.js"></script>
+    <script src="lib/mocha/mocha.js"></script>
+    <script src="lib/expectations.js"></script>
 
     <style>
         body{
@@ -29,6 +28,7 @@
 </head>
 <body>
     <div id="testArea"></div>
+    <div id="mocha"></div>
 
     <!-- most commonly used source files here... -->
     <script src="lib/sinon-1.1.0.js"></script>
@@ -58,12 +58,13 @@
     <!-- include spec files here... -->
 
     <script>
-        require(['tabler.tests.js'], function(){
+        mocha.setup({
+            ui: 'bdd',
+            globals: ['jQuery']
+        });
+        require(['jquery', 'tabler.tests.js'], function(){
             'use strict';
-            var env = window.jasmineEnv = jasmine.getEnv();
-            env.addReporter(new jasmine.TrivialReporter());
-
-            env.execute();
+            mocha.run();
         });
     </script>
 
