@@ -34,14 +34,6 @@
     <script src="lib/sinon-1.1.0.js"></script>
 
     <script>
-        var require = {
-            baseUrl: '/',
-            paths: {
-                'tabler': '../',
-                'jquery': 'test/lib/jquery-1.7.1',
-                'underscore': 'test/lib/underscore'
-            }
-        };
         if(!window.console){
             window.console = {
                 log: function(){},
@@ -56,17 +48,7 @@
     <script src="lib/require.js"></script>
 
     <!-- include spec files here... -->
-
-    <script>
-        mocha.setup({
-            ui: 'bdd',
-            globals: ['jQuery']
-        });
-        require(['jquery', 'tabler.tests.js'], function(){
-            'use strict';
-            mocha.run();
-        });
-    </script>
+    <script src="loader.js"></script>
 
 </body>
 </html>
