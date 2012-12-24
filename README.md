@@ -188,3 +188,7 @@ Used in conjunction with the pager plugin, adds a "Jump to page" input box into 
 ### removeColumns
 
 Adds an "x" link to each toggleable column header and column group, which disables the column when clicked
+
+### infiniTable (infinite scrolling)
+
+Changes the pager plugin to support infinite scrolling instead - new results will be pulled in as the tables container is scrolled
