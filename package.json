@@ -1,7 +1,7 @@
 {
   "name": "tabler",
   "description": "Client-side table generation",
-  "version": "0.9.2",
+  "version": "0.10.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/BrandwatchLtd/tabler.git"
@@ -26,14 +26,21 @@
   },
   "testling": {
     "browsers": [
-        "ie6", "ie7", "ie8", "ie9",
-        "firefox/15", "chrome/22", "opera/12", "safari/5.1"
+      "ie6",
+      "ie7",
+      "ie8",
+      "ie9",
+      "firefox/15",
+      "chrome/22",
+      "opera/12",
+      "safari/5.1"
     ],
-    "harness" : "mocha",
+    "harness": "mocha",
     "scripts": [
       "lib/expectations.js",
       "test/lib/sinon-1.1.0.js",
       "test/lib/require.js",
-      "test/loader.js"]
+      "test/loader.js"
+    ]
   }
 }
