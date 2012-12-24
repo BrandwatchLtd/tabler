@@ -34,11 +34,18 @@
     <div id="mocha"></div>
 
     <script>
+        var require = {
+            baseUrl: '../',
+            paths: {
+                'jquery': 'tests/lib/jquery-1.7.1',
+                'underscore': 'tests/lib/underscore'
             },
             shim: {
                 'underscore': {
                     exports: '_'
                 }
+            }
+        };
         if(!window.console){
             window.console = {
                 log: function(){},
