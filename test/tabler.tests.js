@@ -2,21 +2,28 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
         function(tabler, columnGrouper, aggregator, toggleColumns, sortable, pager, pageSize, jumpToPage, removeColumns){
     'use strict';
     describe('tabler', function(){
+        var table;
+        afterEach(function(){
+            if(table){
+                table.destroy();
+                table = undefined;
+            }
+        });
         describe('rendering', function(){
             it('gives the table a class if specified', function(){
-                var table = tabler.create(null, {className: 'testClass'});
+                table = tabler.create(null, {className: 'testClass'});
 
                 expect(table.$el.hasClass('testClass')).toEqual(true);
             });
 
             it('uses the first argument to create as options if its an object', function(){
-                var table = tabler.create({className: 'testClass'});
+                table = tabler.create({className: 'testClass'});
 
                 expect(table.$el.hasClass('testClass')).toEqual(true);
             });
 
             it('renders as a table with rows from results', function(){
-                var table = tabler.create();
+                table = tabler.create();
 
                 table.load([
                     {column1: 'column 1a', column2: 'column 2a'},
@@ -34,7 +41,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('tr').eq(1).find('td').eq(1).text()).toEqual('column 2b');
             });
             it('will only render the fields given in the spec, when there is a spec', function(){
-                var table = tabler.create([
+                table = tabler.create([
                     {field: 'column1'}
                 ]);
 
@@ -50,7 +57,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('tr').eq(1).find('td').eq(0).text()).toEqual('column 1b');
             });
             it('can have default values for columns', function(){
-                var table = tabler.create([
+                table = tabler.create([
                     {field: 'column1', defaultText: 'n/a'}
                 ]);
 
@@ -123,14 +130,14 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(err).toBeDefined();
             });
             it('allows specs to be added via the addToSpec method', function(){
-                var table = tabler.create([]);
+                table = tabler.create([]);
 
                 table.addToSpec({field: 'column1'});
 
                 expect(table.spec[0]).toEqual({id: 'column1', field: 'column1'});
             });
             it('allows specs to be removed via the removeFromSpec method', function(){
-                var table = tabler.create([
+                table = tabler.create([
                     {id: 'column1', field: 'column1'}
                 ]);
 
@@ -139,39 +146,42 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.spec.length).toEqual(0);
             });
             it('allows you to pull out column specs by fieldName', function(){
-                var table = tabler.create([
-                        {field: 'column1', name: 'testing', prop: 'customValue'}
-                    ]),
-                    field;
+                var field;
+
+                table = tabler.create([
+                    {field: 'column1', name: 'testing', prop: 'customValue'}
+                ]);
 
                 field = table.getField('column1');
 
                 expect(field).toEqual({field: 'column1', name: 'testing', prop: 'customValue', id: 'column1'});
             });
             it('allows you to pull out column specs by id', function(){
-                var table = tabler.create([
-                        {id: 'id', field: 'column1', name: 'testing', prop: 'customValue'}
-                    ]),
-                    field;
+                var field;
+
+                table = tabler.create([
+                    {id: 'id', field: 'column1', name: 'testing', prop: 'customValue'}
+                ]);
 
                 field = table.getField('id');
 
                 expect(field).toEqual({id: 'id', field: 'column1', name: 'testing', prop: 'customValue'});
             });
             it('allows you to pull out column specs by other attributes on their own', function(){
-                var table = tabler.create([
+                var field;
+
+                table = tabler.create([
                         {id: 1, field: 'column1', name: 'testing', prop: 'other'},
                         {id: 2, field: 'column1', name: 'testing', prop: 'customValue'},
                         {id: 3, field: 'column1', name: 'testing', prop: 'yetAnother'}
-                    ]),
-                    field;
+                    ]);
 
                 field = table.getField({prop: 'customValue'});
 
                 expect(field).toEqual({id: 2, field: 'column1', name: 'testing', prop: 'customValue'});
             });
             it('builds thead and th elements with labels and classes as defined in spec', function(){
-                var table = tabler.create([
+                table = tabler.create([
                     {field: 'column1', name: 'Column 1', headerClassName: 'column1Class'},
                     {field: 'column2', name: 'Column 2', headerClassName: 'column2Class'}
                 ]);
@@ -193,7 +203,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('tbody tr').length).toEqual(2);
             });
             it('builds columns with custom header text', function(){
-                var table = tabler.create([
+                table = tabler.create([
                     {field: 'column1', name: 'Column 1', title: 'First Column'}
                 ]);
 
@@ -208,7 +218,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('thead th').eq(0).text().trim()).toEqual('First Column');
             });
             it('builds columns with custom header text even when that text is an empty string', function(){
-                var table = tabler.create([
+                table = tabler.create([
                     {field: 'column1', name: 'Column 1', title: ''}
                 ]);
 
@@ -223,7 +233,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('thead th').eq(0).text().trim()).toEqual('');
             });
             it('can give columns a width and a CSS class', function(){
-                var table = tabler.create([
+                table = tabler.create([
                     {field: 'column1', name: 'Column 1', width: '25%'},
                     {field: 'column2', name: 'Column 2', className: 'testing'}
                 ]);
@@ -244,7 +254,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('tbody tr').eq(1).find('td').eq(1).attr('class')).toEqual('testing');
             });
             it('can have disabled columns that do not render', function(){
-                var table = tabler.create([
+                table = tabler.create([
                     {field: 'column1', name: 'Column 1', disabled: true},
                     {field: 'column2', name: 'Column 2'}
                 ]);
@@ -268,10 +278,11 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
             it('can have formatter functions on headings', function(){
                 var formatter = sinon.spy(function(columnSpec){
                         return '<span>' + columnSpec.field + '</span>';
-                    }),
-                    table = tabler.create([
-                        {field: 'column1', headerFormatter: formatter}
-                    ]);
+                    });
+                
+                table = tabler.create([
+                    {field: 'column1', headerFormatter: formatter}
+                ]);
 
                 table.load([
                     {column1: 'column 1a', column2: 'column 2a', column3: 'column 3a'},
@@ -286,10 +297,11 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
             it('can have formatter functions on cells', function(){
                 var formatter = sinon.spy(function(value, columnSpec, rowData, index){
                         return '<a href="#">' + value + '</a>';
-                    }),
-                    table = tabler.create([
-                        {field: 'column1', formatter: formatter}
-                    ]);
+                    });
+                
+                table = tabler.create([
+                    {field: 'column1', formatter: formatter}
+                ]);
 
                 table.load([
                     {column1: 'column 1a', column2: 'column 2a', column3: 'column 3a'},
@@ -307,8 +319,9 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('tr').eq(1).find('td').eq(0).html().toLowerCase()).toEqual('<a href="#">column 1b</a>');
             });
             it('cleans up on destroy', function(){
-                var clickSpy = sinon.spy(),
-                    table = tabler.create();
+                var clickSpy = sinon.spy();
+                
+                table = tabler.create();
 
                 table.load([
                     {column1: 'column 1a', column2: 'column 2a', column3: 'column 3a'},
@@ -326,12 +339,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
             });
         });
         describe('plugins', function(){
-            beforeEach(function(){
-                tabler.pluginPrefix = 'lib/tabler/tabler.';
-            });
             it('can create with plugins', function(){
-                var table;
-
                 function TestPlugin(options){
                     this.options = options;
                 }
@@ -345,7 +353,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(TestPlugin.prototype.attach.args[0][0]).toEqual(table);
             });
             it('can add plugins', function(){
-                var table = tabler.create();
+                table = tabler.create();
 
                 function TestPlugin(options){
                     this.options = options;
@@ -365,10 +373,10 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     var totaliser = sinon.spy(function(memo, value){
                             memo = memo + value;
                             return memo;
-                        }),
-                        table = tabler.create([
-                            {field: 'column1', aggregator: totaliser}
-                        ], {plugins: [aggregator]});
+                        });
+                    table = tabler.create([
+                        {field: 'column1', aggregator: totaliser}
+                    ], {plugins: [aggregator]});
 
                     table.load([
                         {column1: 2},
@@ -385,11 +393,11 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     var totaliser = sinon.spy(function(memo, value){
                             memo = (memo || 0) + value;
                             return memo;
-                        }),
-                        table = tabler.create([
-                            {field: 'column1', aggregatorText: 'Total'},
-                            {field: 'column2', aggregator: totaliser}
-                        ], {plugins: [aggregator]});
+                        });
+                    table = tabler.create([
+                        {field: 'column1', aggregatorText: 'Total'},
+                        {field: 'column2', aggregator: totaliser}
+                    ], {plugins: [aggregator]});
 
                     table.load([
                         {column1: 'Thing 1', column2: 2},
@@ -406,11 +414,11 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     var totaliser = sinon.spy(function(memo, value){
                             memo = memo + value;
                             return memo;
-                        }),
-                        table = tabler.create([
-                            {field: 'column1', className: 'firstColumn', aggregatorText: 'Total'},
-                            {field: 'column2', className: 'secondColumn', aggregator: totaliser}
-                        ], {plugins: [aggregator]});
+                        });
+                    table = tabler.create([
+                        {field: 'column1', className: 'firstColumn', aggregatorText: 'Total'},
+                        {field: 'column2', className: 'secondColumn', aggregator: totaliser}
+                    ], {plugins: [aggregator]});
 
                     table.load([
                         {column1: 2},
@@ -424,7 +432,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
             });
             describe('columnGrouper', function(){
                 it('can group column headers', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', name: 'Column 1'},
                         {field: 'column2', name: 'Column 2', groupName: 'Group 1'},
                         {field: 'column3', name: 'Column 3', groupName: 'Group 1'},
@@ -450,7 +458,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('thead tr:first th').eq(2).text()).toEqual('');
                 });
                 it('can have formatters for column groups', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', name: 'Column 1', groupName: 'Group 1'},
                         {field: 'column2', name: 'Column 2', groupName: 'Group 1'}
                     ], {plugins: [columnGrouper]});
@@ -473,7 +481,6 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 });
             });
             describe('toggleColumns', function(){
-                var table;
                 beforeEach(function(){
                     table = tabler.create([
                         {field: 'column1'},
@@ -486,9 +493,6 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                         {column1: 20, column2: 600}
                     ]);
                     table.render();
-                });
-                afterEach(function(){
-                    table.destroy();
                 });
                 it('adds header row containing toggle button', function(){
                     expect(table.toggleColumns).toBeDefined();
@@ -648,6 +652,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                     expect($('.toggleColumnsUI').length).toEqual(0);
                     expect(renderSpy.calledOnce).toEqual(true);
+
+                    renderSpy.restore();
                 });
                 it('triggers columnsToggled event when "Apply" pressed', function(){
                     var renderSpy = sinon.spy(table, 'render'),
@@ -659,6 +665,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     $('.toggleColumnsUI button.apply').click();
 
                     expect(columnsToggledSpy.calledOnce).toEqual(true);
+
+                    renderSpy.restore();
                 });
                 it('disables the "Apply" button when no columns checked', function(){
                     var renderSpy = sinon.spy(table, 'render');
@@ -675,6 +683,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.spec[0].disabled).not.toEqual(true);
                     expect(table.spec[1].disabled).not.toEqual(true);
                     expect(renderSpy.called).toEqual(false);
+
+                    renderSpy.restore();
                 });
                 it('removes the toggleColumns UI when "Cancel" pressed and does not apply changes to table', function(){
                     var renderSpy = sinon.spy(table, 'render');
@@ -690,6 +700,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                     expect(table.spec[0].disabled).toEqual(true);
                     expect(renderSpy.called).toEqual(false);
+
+                    renderSpy.restore();
                 });
                 it('can toggle columns without a field name', function(){
                     var renderSpy = sinon.spy(table, 'render');
@@ -707,6 +719,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.spec[1].disabled).not.toEqual(true);
                     expect(table.spec[2].disabled).not.toEqual(true);
                     expect(renderSpy.calledOnce).toEqual(true);
+
+                    renderSpy.restore();
                 });
 
                 describe('column groups', function(){
@@ -863,7 +877,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
             });
             describe('sortable', function(){
                 it('adds client-side sorting to columns with sortable: true', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: false}
                     ], {plugins: [sortable]});
@@ -883,7 +897,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('thead th').eq(1).find('a.sort').length).toEqual(0);
                 });
                 it('preserves className on ths', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true, className: 'myClass'}
                     ], {plugins: [sortable]});
 
@@ -900,7 +914,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('thead th').hasClass('myClass')).toEqual(true);
                 });
                 it('preserves headerClassName on ths', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true, headerClassName: 'myClass'}
                     ], {plugins: [sortable]});
 
@@ -917,7 +931,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('thead th').hasClass('myClass')).toEqual(true);
                 });
                 it('can client-side sorts descending on first header click', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: false}
                     ], {plugins: [sortable]});
@@ -937,7 +951,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
                 });
                 it('can client-side sorts ascending on second header click', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: false}
                     ], {plugins: [sortable]});
@@ -958,7 +972,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('30');
                 });
                 it('sorts on TH click', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: false}
                     ], {plugins: [sortable]});
@@ -979,7 +993,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('30');
                 });
                 it('does not sort unsortable columns on TH click', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: false}
                     ], {plugins: [sortable]});
@@ -999,7 +1013,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('tbody tr').eq(2).find('td').eq(1).text()).toEqual('600');
                 });
                 it('can pre-sort table', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: false}
                     ], {plugins: [sortable]});
@@ -1020,7 +1034,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
                 });
                 it('updates sort headers correctly when sorting removed externally', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: true}
                     ], {plugins: [sortable]});
@@ -1046,7 +1060,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
                 });
                 it('does not add sorted classes to columns without a field name', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {name: 'column1'}
                     ], {plugins: [sortable]});
 
@@ -1060,7 +1074,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(table.$('thead th').eq(0).attr('class') || '').toEqual('');
                 });
                 it('cleans up invalid sort direction', function(){
-                    var table = tabler.create([
+                    table = tabler.create([
                         {field: 'column1', sortable: true},
                         {field: 'column2', sortable: false}
                     ], {plugins: [sortable]});
@@ -1083,11 +1097,13 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 it('can use custom sorting', function(){
                     var sorter = sinon.spy(function(data, fieldName, direction, fn){
                             fn(undefined, data);
-                        }), table = tabler.create([
-                            {field: 'column1', sortable: true},
-                            {field: 'column2', sortable: false}
-                        ], {plugins: [sortable]}),
+                        }),
                         data;
+
+                    table = tabler.create([
+                        {field: 'column1', sortable: true},
+                        {field: 'column2', sortable: false}
+                    ], {plugins: [sortable]});
 
                     table.sortable.sorter = sorter;
                     table.load(data = [
@@ -1109,7 +1125,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(sorter.args[1][2]).toEqual('asc');
                 });
                 it('adds sortable classes to fields added after the table is initialised', function(){
-                    var table = tabler.create([{field: 'column1', sortable: true}], {plugins: [sortable]});
+                    table = tabler.create([{field: 'column1', sortable: true}], {plugins: [sortable]});
 
                     table.addToSpec({field: 'column2', sortable: true});
 
@@ -1117,7 +1133,6 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 });
             });
             describe('pager', function(){
-                var table;
                 beforeEach(function(){
                     table = tabler.create([
                         {field: 'column1'},
@@ -1504,7 +1519,6 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 });
             });
             describe('pageSize', function(){
-                var table;
                 beforeEach(function(){
                     table = tabler.create([
                         {field: "column1"}
@@ -1604,7 +1618,6 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 });
             });
             describe('jumpToPage', function(){
-                var table;
                 beforeEach(function(){
                     table = tabler.create([
                         {field: "column1"}
@@ -1650,6 +1663,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                     expect(table.pager.currentPage).toEqual(1);
                     expect(renderStub.calledOnce).toEqual(true);
+
+                    renderStub.restore();
                 });
                 it('changes the page index & re-renders the table when Enter key pressed in input', function(){
                     var renderStub,
@@ -1665,6 +1680,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     expect(enterKey.isDefaultPrevented()).toEqual(true);
                     expect(table.pager.currentPage).toEqual(1);
                     expect(renderStub.calledOnce).toEqual(true);
+
+                    renderStub.restore();
                 });
                 it('does not react to other key presses', function(){
                     var renderStub;
@@ -1676,6 +1693,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     table.$('p.jumpToPage input').keydown();
 
                     expect(renderStub.called).toEqual(false);
+
+                    renderStub.restore();
                 });
                 it('ignores submission attempts when no value input', function(){
                     var renderStub;
@@ -1687,6 +1706,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                     table.$('p.jumpToPage button').click();
 
                     expect(renderStub.called).toEqual(false);
+
+                    renderStub.restore();
                 });
                 it('goes to the last page when a large number is entered', function(){
                     var renderStub;
@@ -1700,6 +1721,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                     expect(table.pager.currentPage).toEqual(2);
                     expect(renderStub.calledOnce).toEqual(true);
+
+                    renderStub.restore();
                 });
                 it('sets input to invalid & clears when a non-numeric value entered', function(){
                     var renderStub;
@@ -1713,10 +1736,11 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                     expect(renderStub.called).toEqual(false);
                     expect(table.$('p.jumpToPage input').hasClass('invalid')).toEqual(true);
+
+                    renderStub.restore();
                 });
             });
             describe('removeColumns', function(){
-                var table;
                 beforeEach(function(){
                     table = tabler.create([
                         {field: "column1", groupName: 'Group 1', title: 'column1'},
