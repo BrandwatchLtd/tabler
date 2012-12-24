@@ -1,0 +1,52 @@
+{
+    "browser": true,
+    "evil": true,
+    "devel": false,
+
+    "strict": true,
+    "globalstrict": true,
+    "forin": true,
+    "immed": true,
+    "newcap": true,
+    "noarg": true,
+    "curly": true,
+    "trailing": true,
+    "eqeqeq": true,
+    "bitwise": true,
+    "noempty": true,
+    "latedef": true,
+    "nonew": true,
+    "quotmark": true,
+    "undef": true,
+    "unused": true,
+    "maxdepth": 3,
+    "maxcomplexity": 10,
+    "maxlen": 140,
+    "camelcase": true,
+    //"maxstatements": 20,
+    // Problematic/buggy:
+    //"maxparams": 3,
+    //"indent": 4,
+
+    "predef":
+    [
+        "define",
+        "require",
+        "_",
+        "$",
+        "jQuery",
+        "before",
+        "after",
+        "beforeEach",
+        "afterEach",
+        "describe",
+        "it",
+        "expect",
+        "xit",
+        "xdescribe",
+        "sinon",
+        "escape",
+        "unescape",
+        "encodeURIComponent"
+    ]
+}

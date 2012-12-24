@@ -1,5 +1,22 @@
-define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabler.aggregator', 'lib/tabler/tabler.toggleColumns', 'lib/tabler/tabler.sortable', 'lib/tabler/tabler.pager', 'lib/tabler/tabler.pageSize', 'lib/tabler/tabler.jumpToPage', 'lib/tabler/tabler.removeColumns'],
-        function(tabler, columnGrouper, aggregator, toggleColumns, sortable, pager, pageSize, jumpToPage, removeColumns){
+define([
+        'lib/tabler/tabler',
+        'lib/tabler/tabler.columnGrouper',
+        'lib/tabler/tabler.aggregator',
+        'lib/tabler/tabler.toggleColumns',
+        'lib/tabler/tabler.sortable',
+        'lib/tabler/tabler.pager',
+        'lib/tabler/tabler.pageSize',
+        'lib/tabler/tabler.jumpToPage',
+        'lib/tabler/tabler.removeColumns'],
+    function(tabler,
+        columnGrouper,
+        aggregator,
+        toggleColumns,
+        sortable,
+        pager,
+        pageSize,
+        jumpToPage,
+        removeColumns){
     'use strict';
     describe('tabler', function(){
         var table;
@@ -268,7 +285,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                 expect(table.$('thead tr').length).toEqual(1);
                 expect(table.$('thead tr th').length).toEqual(1);
-                expect(table.$('thead tr th').text()).toEqual("Column 2");
+                expect(table.$('thead tr th').text()).toEqual('Column 2');
 
                 expect(table.$('tbody tr').length).toEqual(2);
                 expect(table.$('tbody tr').eq(0).find('td').length).toEqual(1);
@@ -295,7 +312,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 expect(table.$('thead tr th').eq(0).html().toLowerCase()).toEqual('<span>column1</span>');
             });
             it('can have formatter functions on cells', function(){
-                var formatter = sinon.spy(function(value, columnSpec, rowData, index){
+                var formatter = sinon.spy(function(value){
                         return '<a href="#">' + value + '</a>';
                     });
                 
@@ -463,8 +480,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                         {field: 'column2', name: 'Column 2', groupName: 'Group 1'}
                     ], {plugins: [columnGrouper]});
 
-                    table.columnGrouper.formatters["Group 1"] = function(groupSpec){
-                        return "<span>" + groupSpec.groupName + " spans " + groupSpec.count + " columns</span>";
+                    table.columnGrouper.formatters['Group 1'] = function(groupSpec){
+                        return '<span>' + groupSpec.groupName + ' spans ' + groupSpec.count + ' columns</span>';
                     };
 
                     table.load([
@@ -768,7 +785,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                         $('.toggleColumnsUI ul.columns > li:first input[name=columnGroup]').attr('checked', false).change();
 
-                        expect($('.toggleColumnsUI ul.columns > li:first input[name=columnGroup]').hasClass('partiallySelected')).toEqual(false);
+                        expect($('.toggleColumnsUI ul.columns > li:first input[name=columnGroup]')
+                            .hasClass('partiallySelected')).toEqual(false);
                     });
                     it('resets partiallySelected class when column group checked', function(){
                         table.spec[0].disabled = true;
@@ -777,7 +795,8 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
 
                         $('.toggleColumnsUI ul.columns > li:first input[name=columnGroup]').attr('checked', true).change();
 
-                        expect($('.toggleColumnsUI ul.columns > li:first input[name=columnGroup]').hasClass('partiallySelected')).toEqual(false);
+                        expect($('.toggleColumnsUI ul.columns > li:first input[name=columnGroup]')
+                            .hasClass('partiallySelected')).toEqual(false);
                     });
                     it('unchecks column group input when all columns unchecked', function(){
                         table.$('tr.toggleColumns button').click();
@@ -1521,7 +1540,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
             describe('pageSize', function(){
                 beforeEach(function(){
                     table = tabler.create([
-                        {field: "column1"}
+                        {field: 'column1'}
                     ], {plugins: [pager, pageSize]});
 
                     table.pager.pageSize =  2;
@@ -1620,7 +1639,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
             describe('jumpToPage', function(){
                 beforeEach(function(){
                     table = tabler.create([
-                        {field: "column1"}
+                        {field: 'column1'}
                     ], {plugins: [pager, jumpToPage]});
 
                     table.pager.pageSize =  2;
@@ -1668,7 +1687,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 });
                 it('changes the page index & re-renders the table when Enter key pressed in input', function(){
                     var renderStub,
-                        enterKey = jQuery.Event("keydown", {which: 13});
+                        enterKey = jQuery.Event('keydown', {which: 13});
 
                     table.render();
 
@@ -1743,11 +1762,11 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
             describe('removeColumns', function(){
                 beforeEach(function(){
                     table = tabler.create([
-                        {field: "column1", groupName: 'Group 1', title: 'column1'},
-                        {field: "column2", groupName: 'Group 1', title: 'column1'},
-                        {field: "column3", groupName: 'Group 1', title: 'column1'},
-                        {field: "column4", groupName: 'Group 2', title: ''},
-                        {field: "column5", groupName: 'Group 2', title: 'column1', toggleable: false}
+                        {field: 'column1', groupName: 'Group 1', title: 'column1'},
+                        {field: 'column2', groupName: 'Group 1', title: 'column1'},
+                        {field: 'column3', groupName: 'Group 1', title: 'column1'},
+                        {field: 'column4', groupName: 'Group 2', title: ''},
+                        {field: 'column5', groupName: 'Group 2', title: 'column1', toggleable: false}
                     ], {plugins: [columnGrouper, removeColumns]});
 
                     table.load([
@@ -1794,7 +1813,7 @@ define(['lib/tabler/tabler', 'lib/tabler/tabler.columnGrouper', 'lib/tabler/tabl
                 });
                 it('can disable a column group when extra columns added to that column group after init', function(){
                     table.addToSpec({
-                        field: "column6",
+                        field: 'column6',
                         groupName: 'Group 1',
                         title: 'column6'
                     });
