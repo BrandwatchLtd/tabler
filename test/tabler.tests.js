@@ -296,7 +296,7 @@ define([
                 var formatter = sinon.spy(function(columnSpec){
                         return '<span>' + columnSpec.field + '</span>';
                     });
-                
+
                 table = tabler.create([
                     {field: 'column1', headerFormatter: formatter}
                 ]);
@@ -315,7 +315,7 @@ define([
                 var formatter = sinon.spy(function(value){
                         return '<a href="#">' + value + '</a>';
                     });
-                
+
                 table = tabler.create([
                     {field: 'column1', formatter: formatter}
                 ]);
@@ -337,7 +337,7 @@ define([
             });
             it('cleans up on destroy', function(){
                 var clickSpy = sinon.spy();
-                
+
                 table = tabler.create();
 
                 table.load([
