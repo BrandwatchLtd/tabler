@@ -1205,6 +1205,36 @@ define([
 
                     expect(table.spec[1].className.trim()).toEqual('sortable');
                 });
+                it('does not sort when new anchors added by header formatters are clicked', function() {
+                    var renderSpy;
+
+                    table = tabler.create([{
+                        field: 'column1',
+                        sortable: true,
+                        headerFormatter: function helpHeaderFormatter(colSpec, title) {
+                            return title + '<a class="help">Help</a>';
+                        }
+                    }], {
+                        plugins: [sortable]
+                    });
+
+                    table.load([
+                        {column1: 30},
+                        {column1: 10},
+                        {column1: 20}
+                    ]);
+
+                    table.render();
+
+                    renderSpy = sinon.spy(table, 'render');
+
+                    table.$('thead tr th a.help').eq(0).click();
+
+                    expect(renderSpy.callCount).toEqual(0);
+                    expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('30');
+                    expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('10');
+                    expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('20');
+                });
             });
             describe('pager', function(){
                 beforeEach(function(){
