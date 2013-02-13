@@ -354,6 +354,27 @@ define([
                 expect(table.$el.is(':empty')).toEqual(true);
                 expect(clickSpy.called).toEqual(false);
             });
+            it('properly disposes of plugins on destroy', function(){
+                var attachSpy = sinon.spy(),
+                    detachSpy = sinon.spy();
+
+                table = tabler.create([], {
+                    plugins: [
+                        _.extend(function TestPlugin(){
+                            return {attach: attachSpy, detach: detachSpy};
+                        }, {pluginName: 'test'})
+                    ]
+                });
+
+                expect(table._plugins).toEqual(['test']);
+                expect(table.test).toEqual({attach: attachSpy, detach: detachSpy});
+
+                table.destroy();
+
+                expect(attachSpy.calledOnce).toEqual(true);
+                expect(detachSpy.calledOnce).toEqual(true);
+                expect(table._plugins.length).toEqual(0);
+            });
         });
         describe('dynamic data', function(){
             it('calls "fetch" method on render if specified', function(){
