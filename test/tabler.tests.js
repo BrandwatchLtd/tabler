@@ -702,6 +702,14 @@ define([
                     expect($('.toggleColumnsUI .columns li input[type=checkbox]').eq(1).is(':checked')).toEqual(true);
                     expect($('.toggleColumnsUI .columns li input[type=checkbox]').eq(1).siblings('label').text()).toEqual('column2');
                 });
+                it('can specify formatter for column in toggle UI', function(){
+                    table.toggleColumns.formatters['column1'] = function(spec){
+                        return '<b>' + spec.field + '</b>';
+                    };
+                    table.$('tr.toggleColumns button').click();
+
+                    expect($('.toggleColumnsUI .columns li input[type=checkbox]').eq(0).siblings('label').html()).toEqual('<b>column1</b>');
+                });
                 it('can have columns un-toggleable', function(){
                     table.spec[0].toggleable = false;
 
@@ -836,6 +844,13 @@ define([
                         expect($('.toggleColumnsUI ul.columns > li li input').eq(0).is(':checked')).toEqual(true);
                         expect($('.toggleColumnsUI ul.columns > li li input').eq(1).val()).toEqual('column2');
                         expect($('.toggleColumnsUI ul.columns > li li input').eq(1).is(':checked')).toEqual(true);
+                    });
+                    it('can specify formatter for column group in toggle UI', function(){
+                        table.toggleColumns.groupFormatters['Group 1'] = function(name){
+                            return '<b>' + name + '</b>';
+                        };
+                        table.$('tr.toggleColumns button').click();
+                        expect($('.toggleColumnsUI ul.columns > li:first label').html()).toEqual('<b>Group 1</b>');
                     });
                     it('shows column group input checked but partially selected when only some columns checked', function(){
                         table.spec[0].disabled = true;
