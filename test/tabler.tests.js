@@ -1041,6 +1041,35 @@ define([
                     expect(table.$('thead th').hasClass('sortable')).toEqual(true);
                     expect(table.$('thead th').hasClass('myClass')).toEqual(true);
                 });
+                it('can call preventDefault when header child element clicked (prevent navigating away from page)', function(){
+                    var preventDefaultSpy = sinon.spy(),
+                    clickEvent = {
+                        type: 'click',
+                        preventDefault: preventDefaultSpy
+                    };
+
+                    table = tabler.create([
+                        {
+                            field: 'column1',
+                            sortable: true,
+                            headerFormatter: function(colSpec, title){
+                                return title.replace(/<\/a>$/i, '<span title="This feature is in BETA" class="betaIcon"></span>' + '</a>');
+                            }
+                        }
+                    ], {plugins: [sortable]});
+
+                    table.load([
+                        {column1: 30},
+                        {column1: 10},
+                        {column1: 20}
+                    ]);
+                    table.render();
+
+                    table.$('thead th:first a.sort span.betaIcon').trigger(clickEvent);
+
+                    expect(preventDefaultSpy.called).toEqual(true);
+                    preventDefaultSpy.restore();
+                });
                 it('can client-side sorts descending on first header click', function(){
                     table = tabler.create([
                         {field: 'column1', sortable: true},
