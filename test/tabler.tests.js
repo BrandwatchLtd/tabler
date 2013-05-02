@@ -1068,7 +1068,6 @@ define([
                     table.$('thead th:first a.sort span.betaIcon').trigger(clickEvent);
 
                     expect(preventDefaultSpy.called).toEqual(true);
-                    preventDefaultSpy.restore();
                 });
                 it('can client-side sorts descending on first header click', function(){
                     table = tabler.create([
