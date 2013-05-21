@@ -1,3 +1,4 @@
+/*globals mocha*/
 require.config({
     baseUrl: '/',
     paths: {
@@ -10,7 +11,17 @@ mocha.setup({
     ui: 'bdd',
     globals: ['jQuery']
 });
-require(['jquery', 'tabler.tests.js'], function(){
+require(['jquery',
+        'test/tabler.tests',
+        'test/tabler.aggregator.tests',
+        'test/tabler.columnGrouper.tests',
+        'test/tabler.jumpToPage.tests',
+        'test/tabler.pageSize.tests',
+        'test/tabler.pager.tests',
+        'test/tabler.toggleColumns.tests',
+        'test/tabler.sortable.tests',
+        'test/tabler.columnGrouper.tests'
+    ], function(){
     'use strict';
     mocha.run();
 });
