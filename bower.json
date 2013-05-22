@@ -1,0 +1,13 @@
+{
+  "name": "tabler",
+  "version": "0.10.1",
+  "main": "lib/tabler/tabler.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "demo",
+    "test",
+    "testem",
+    "serve.sh"
+  ]
+}
