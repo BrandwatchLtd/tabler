@@ -1,6 +1,6 @@
 {
   "name": "tabler",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "main": "lib/tabler/tabler.js",
   "ignore": [
     "**/.*",
