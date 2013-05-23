@@ -3,7 +3,7 @@ Tabler.js
 
 [![Build Status](https://travis-ci.org/BrandwatchLtd/tabler.png)](https://travis-ci.org/BrandwatchLtd/tabler)
 
-A lightweight library for building dynamic tables. [View the demos][http://brandwatchltd.github.com/tabler/demo/]
+A lightweight library for building dynamic tables. [View the demos](http://brandwatchltd.github.com/tabler/demo/)
 
 ## Including tabler in your project
 
