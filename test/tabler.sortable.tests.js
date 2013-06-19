@@ -94,7 +94,7 @@ define([
 
             expect(preventDefaultSpy.called).toEqual(true);
         });
-        it('can client-side sorts descending on first header click', function(){
+        it('client-side sorts descending on first header click', function(){
             table = tabler.create([
                 {field: 'column1', sortable: true},
                 {field: 'column2', sortable: false}
@@ -114,7 +114,7 @@ define([
             expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
             expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('10');
         });
-        it('can client-side sorts ascending on second header click', function(){
+        it('client-side sorts ascending on second header click', function(){
             table = tabler.create([
                 {field: 'column1', sortable: true},
                 {field: 'column2', sortable: false}
@@ -236,6 +236,24 @@ define([
             table.render();
 
             expect(table.$('thead th').eq(0).attr('class') || '').toEqual('');
+        });
+        it('can sort when multiple columns have the same field name ', function(){
+            table = tabler.create([
+                {id: 'id1', field: 'column1', sortable: true},
+                {id: 'id2', field: 'column1', sortable: true}
+            ], {plugins: [sortable]});
+
+            table.load([
+                {column1: 30},
+                {column1: 10},
+                {column1: 20}
+            ]);
+            table.render();
+
+            table.$('thead th:eq(0) a.sort').click();
+
+            expect(table.$('thead th:eq(0)').attr('class')).toEqual('sortable sorted-desc');
+            expect(table.$('thead th:eq(1)').attr('class')).toEqual('sortable sorted-desc');
         });
         it('cleans up invalid sort direction', function(){
             table = tabler.create([
