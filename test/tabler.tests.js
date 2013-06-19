@@ -365,6 +365,44 @@ define([
                 expect(table._plugins.length).toEqual(0);
             });
         });
+        describe('partial updates', function(){
+            beforeEach(function(){
+                table = tabler.create();
+
+                table.load([
+                    {column1: 'column 1a', column2: 'column 2a', column3: 'column 3a'},
+                    {column1: 'column 1b', column2: 'column 2b', column3: 'column 3b'}
+                ]);
+                table.render();
+            });
+            it('can update the table via the update method', function(){
+                table.update(0, {
+                    column1: 'updated column 1a',
+                    column2: 'updated column 2a',
+                    column3: 'updated column 3a'
+                });
+
+                expect(table.$('tbody tr:eq(0) td:eq(0)').text()).toEqual('updated column 1a');
+                expect(table.$('tbody tr:eq(0) td:eq(1)').text()).toEqual('updated column 2a');
+                expect(table.$('tbody tr:eq(0) td:eq(2)').text()).toEqual('updated column 3a');
+                expect(table.$('tbody tr:eq(1) td:eq(0)').text()).toEqual('column 1b');
+                expect(table.$('tbody tr:eq(1) td:eq(1)').text()).toEqual('column 2b');
+                expect(table.$('tbody tr:eq(1) td:eq(2)').text()).toEqual('column 3b');
+            });
+            it('only touches the row at the given index when updating', function(){
+                var $row1 = table.$('tbody tr:eq(0)'),
+                    $row2 = table.$('tbody tr:eq(1)');
+
+                table.update(0, {
+                    column1: 'updated column 1a',
+                    column2: 'updated column 2a',
+                    column3: 'updated column 3a'
+                });
+
+                expect($row1.parent().length).toEqual(0);
+                expect($row2.parent().length).toEqual(1);
+            });
+        });
         describe('dynamic data', function(){
             it('calls "fetch" method on render if specified', function(){
                 var fetchSpy = sinon.spy(),
