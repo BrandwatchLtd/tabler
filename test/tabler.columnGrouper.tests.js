@@ -60,5 +60,52 @@ define([
             expect(table.$('thead tr:first th').length).toEqual(1);
             expect(table.$('thead tr:first th').html().toLowerCase()).toEqual('<span>group 1 spans 2 columns</span>');
         });
+        it('can have formatters for column groups (added through options)', function(){
+            table = tabler.create([
+                {field: 'column1', name: 'Column 1', groupName: 'Group 1'},
+                {field: 'column2', name: 'Column 2', groupName: 'Group 1'}
+            ], {
+                plugins: [columnGrouper],
+                columnGrouper: {
+                    formatters: {
+                        'Group 1': function(groupSpec){
+                            return '<span>' + groupSpec.groupName + ' spans ' + groupSpec.count + ' columns</span>';
+                        }
+                    }
+                }
+            });
+
+            table.load([
+                {column1: 'column 1a', column2: 'column 2a'},
+                {column1: 'column 1b', column2: 'column 2b'}
+            ]);
+            table.render();
+
+            expect(table.$('thead').length).toEqual(1);
+            expect(table.$('thead tr').length).toEqual(2);
+            expect(table.$('thead tr:first').attr('class')).toEqual('columnGroups');
+            expect(table.$('thead tr:first th').length).toEqual(1);
+            expect(table.$('thead tr:first th').html().toLowerCase()).toEqual('<span>group 1 spans 2 columns</span>');
+        });
+        it('can take classname to add to each group header cell', function(){
+            table = tabler.create([
+                {field: 'column1', name: 'Column 1', groupName: 'Group 1'},
+                {field: 'column2', name: 'Column 2', groupName: 'Group 1'}
+            ], {
+                plugins: [columnGrouper],
+                columnGrouper: {
+                    headerCellClassNames: {
+                        'Group 1': 'foo'
+                    }
+                }
+            });
+            table.load([
+                {column1: 'column 1a', column2: 'column 2a'},
+                {column1: 'column 1b', column2: 'column 2b'}
+            ]);
+            table.render();
+
+            expect(table.$('thead tr:first th').attr('class')).toEqual('foo');
+        });
     });
 });
