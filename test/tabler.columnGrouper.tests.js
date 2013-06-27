@@ -107,5 +107,109 @@ define([
 
             expect(table.$('thead tr:first th').attr('class')).toEqual('foo');
         });
+        it('can add a classname to the first cell in every column group', function(){
+            table = tabler.create([
+                {id: 1, field: 'column1', name: 'Column 1a', groupName: 'Group 1'},
+                {id: 2, field: 'column2', name: 'Column 2a', groupName: 'Group 1'},
+                {id: 3, field: 'column1', name: 'Column 1b', groupName: 'Group 2'},
+                {id: 4, field: 'column2', name: 'Column 2b', groupName: 'Group 2'}
+            ], {
+                plugins: [columnGrouper],
+                columnGrouper: {
+                    firstCellInGroupClassName: 'fist'
+                }
+            });
+
+            table.load([
+                {column1: 'column 1a', column2: 'column 2a'},
+                {column1: 'column 1b', column2: 'column 2b'}
+            ]);
+            table.render();
+
+            expect(table.$('thead tr:eq(1) th:eq(0)').attr('class')).toEqual('fist');
+            expect(table.$('thead tr:eq(1) th:eq(1)').attr('class')).toBeFalsey();
+            expect(table.$('thead tr:eq(1) th:eq(2)').attr('class')).toEqual('fist');
+            expect(table.$('thead tr:eq(1) th:eq(3)').attr('class')).toBeFalsey();
+            expect(table.$('tbody tr:first td:eq(0)').attr('class')).toEqual('fist');
+            expect(table.$('tbody tr:first td:eq(1)').attr('class')).toBeFalsey();
+            expect(table.$('tbody tr:first td:eq(2)').attr('class')).toEqual('fist');
+            expect(table.$('tbody tr:first td:eq(3)').attr('class')).toBeFalsey();
+        });
+        it('can add a classname to the first cell in every column group, regardless of disabled state', function(){
+            table = tabler.create([
+                {id: 1, field: 'column1', name: 'Column 1a', groupName: 'Group 1'},
+                {id: 2, field: 'column2', name: 'Column 2a', groupName: 'Group 1', disabled: true},
+                {id: 3, field: 'column1', name: 'Column 1b', groupName: 'Group 2', disabled: true},
+                {id: 4, field: 'column2', name: 'Column 2b', groupName: 'Group 2'}
+            ], {
+                plugins: [columnGrouper],
+                columnGrouper: {
+                    firstCellInGroupClassName: 'fist'
+                }
+            });
+
+            table.load([
+                {column1: 'column 1a', column2: 'column 2a'},
+                {column1: 'column 1b', column2: 'column 2b'}
+            ]);
+            table.render();
+
+            expect(table.$('thead tr:eq(1) th:eq(0)').attr('class')).toEqual('fist');
+            expect(table.$('thead tr:eq(1) th:eq(1)').attr('class')).toEqual('fist');
+            expect(table.$('tbody tr:first td:eq(0)').attr('class')).toEqual('fist');
+            expect(table.$('tbody tr:first td:eq(1)').attr('class')).toEqual('fist');
+        });
+        it('can add a classname to the last cell in every column group', function(){
+            table = tabler.create([
+                {id: 1, field: 'column1', name: 'Column 1a', groupName: 'Group 1'},
+                {id: 2, field: 'column2', name: 'Column 2a', groupName: 'Group 1'},
+                {id: 3, field: 'column1', name: 'Column 1b', groupName: 'Group 2'},
+                {id: 4, field: 'column2', name: 'Column 2b', groupName: 'Group 2'}
+            ], {
+                plugins: [columnGrouper],
+                columnGrouper: {
+                    lastCellInGroupClassName: 'lst'
+                }
+            });
+
+            table.load([
+                {column1: 'column 1a', column2: 'column 2a'},
+                {column1: 'column 1b', column2: 'column 2b'}
+            ]);
+            table.render();
+
+            expect(table.$('thead tr:eq(1) th:eq(0)').attr('class')).toBeFalsey();
+            expect(table.$('thead tr:eq(1) th:eq(1)').attr('class')).toEqual('lst');
+            expect(table.$('thead tr:eq(1) th:eq(2)').attr('class')).toBeFalsey();
+            expect(table.$('thead tr:eq(1) th:eq(3)').attr('class')).toEqual('lst');
+            expect(table.$('tbody tr:first td:eq(0)').attr('class')).toBeFalsey();
+            expect(table.$('tbody tr:first td:eq(1)').attr('class')).toEqual('lst');
+            expect(table.$('tbody tr:first td:eq(2)').attr('class')).toBeFalsey();
+            expect(table.$('tbody tr:first td:eq(3)').attr('class')).toEqual('lst');
+        });
+        it('can add a classname to the last cell in every column group, regardless of disabled state', function(){
+            table = tabler.create([
+                {id: 1, field: 'column1', name: 'Column 1a', groupName: 'Group 1'},
+                {id: 2, field: 'column2', name: 'Column 2a', groupName: 'Group 1', disabled: true},
+                {id: 3, field: 'column1', name: 'Column 1b', groupName: 'Group 2', disabled: true},
+                {id: 4, field: 'column2', name: 'Column 2b', groupName: 'Group 2'}
+            ], {
+                plugins: [columnGrouper],
+                columnGrouper: {
+                    lastCellInGroupClassName: 'lst'
+                }
+            });
+
+            table.load([
+                {column1: 'column 1a', column2: 'column 2a'},
+                {column1: 'column 1b', column2: 'column 2b'}
+            ]);
+            table.render();
+
+            expect(table.$('thead tr:eq(1) th:eq(0)').attr('class')).toEqual('lst');
+            expect(table.$('thead tr:eq(1) th:eq(1)').attr('class')).toEqual('lst');
+            expect(table.$('tbody tr:first td:eq(0)').attr('class')).toEqual('lst');
+            expect(table.$('tbody tr:first td:eq(1)').attr('class')).toEqual('lst');
+        });
     });
 });
