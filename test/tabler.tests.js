@@ -83,6 +83,23 @@ define([
                 expect(table.$('tr').eq(5).find('td').eq(0).text()).toEqual('false');
                 expect(table.$('tr').eq(6).find('td').eq(0).text()).toEqual('0');
             });
+            it('can have a global className override for cells', function(){
+                table = tabler.create([
+                    {field: 'column1'}
+                ], {
+                    cellClassName: 'foo'
+                });
+
+                table.load([
+                    {column1: 'column 1a', column2: 'column 2a'}
+                ]);
+
+                table.render();
+
+                _(table.$('tbody td')).forEach(function(td){
+                    expect(td.className.split(' ')).toContain('foo');
+                });
+            });
         });
         describe('specs', function(){
             it('does not allow duplicate fieldnames', function(){
@@ -237,6 +254,44 @@ define([
 
                 expect(table.$('thead th').length).toEqual(1);
                 expect(table.$('thead th').eq(0).text().trim()).toEqual('');
+            });
+            it('can give columns CSS class names', function(){
+                table = tabler.create([
+                    {field: 'column1', name: 'Column 1'},
+                    {field: 'column2', name: 'Column 2', className: 'testing'}
+                ]);
+
+                table.load([
+                    {column1: 'column 1a', column2: 'column 2a'}
+                ]);
+                table.render();
+
+                expect(table.$('thead').length).toEqual(1);
+                expect(table.$('thead th').eq(0).attr('class')).not.toBeTruthy();
+                expect(table.$('thead th').eq(1).attr('class')).toEqual('testing');
+
+                expect(table.$('tbody tr td').eq(0).attr('class')).not.toBeTruthy();
+                expect(table.$('tbody tr td').eq(1).attr('class')).toEqual('testing');
+            });
+            it('can give columns their own CSS class with a table-level cellClassName as well', function(){
+                table = tabler.create([
+                    {field: 'column1', name: 'Column 1'},
+                    {field: 'column2', name: 'Column 2', className: 'testing'}
+                ], {
+                    cellClassName: 'foo'
+                });
+
+                table.load([
+                    {column1: 'column 1a', column2: 'column 2a'}
+                ]);
+                table.render();
+
+                expect(table.$('thead').length).toEqual(1);
+                expect(table.$('thead th').eq(0).attr('class')).not.toBeTruthy();
+                expect(table.$('thead th').eq(1).attr('class')).toEqual('testing');
+
+                expect(table.$('tbody tr td').eq(0).attr('class')).toEqual('foo');
+                expect(table.$('tbody tr td').eq(1).attr('class')).toEqual('testing foo');
             });
             it('can give columns a width and a CSS class', function(){
                 table = tabler.create([
