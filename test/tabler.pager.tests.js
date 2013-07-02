@@ -343,6 +343,18 @@ define([
                         expect(table.$('tfoot ol.pager li:not(.next):last').hasClass('skipped')).toEqual(true);
                     });
                 });
+                describe('"6 pages results', function(){
+                    beforeEach(function(){
+                        table.pager.pageSize = 42; // equals 6 pages
+                    });
+                    it('does not add "skipped" to any element on any page', function(){
+                        _.each([0,1,2,3,4,5], function(i) {
+                            table.pager.currentPage = i;
+                            table.render();
+                            expect(table.$('tfoot ol.pager li:not(.next, .prev).skipped').length).toEqual(0);
+                        });
+                    });
+                });
             });
         });
         describe('works with server-side paging', function(){
