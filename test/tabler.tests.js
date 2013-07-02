@@ -100,6 +100,21 @@ define([
                     expect(td.className.split(' ')).toContain('foo');
                 });
             });
+            it('cellClassName does not modify colSpec', function(){
+                table = tabler.create([
+                    {field: 'column1', className: 'bar'}
+                ], {
+                    cellClassName: 'foo'
+                });
+
+                table.load([
+                    {column1: 'column 1a', column2: 'column 2a'}
+                ]);
+
+                table.render();
+
+                expect(table.spec[0].className).toEqual('bar');
+            });
         });
         describe('specs', function(){
             it('does not allow duplicate fieldnames', function(){
