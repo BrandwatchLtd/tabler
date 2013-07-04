@@ -72,5 +72,44 @@ define([
             expect(table.$('tfoot td').eq(0).hasClass('firstColumn')).toEqual(true);
             expect(table.$('tfoot td').eq(1).hasClass('secondColumn')).toEqual(true);
         });
+        it('adds cell classes to all columns', function(){
+            var totaliser = sinon.spy(function(memo, value){
+                    memo = memo + value;
+                    return memo;
+                });
+            table = tabler.create([
+                {field: 'column1', className: 'firstColumn', aggregatorText: 'Total'},
+                {field: 'column2', className: 'secondColumn', aggregator: totaliser}
+            ], {plugins: [aggregator], cellClassName: 'tablecell'});
+
+            table.load([
+                {column1: 2},
+                {column1: 4}
+            ]);
+            table.render();
+
+            expect(table.$('tfoot td').eq(0).hasClass('tablecell')).toEqual(true);
+            expect(table.$('tfoot td').eq(1).hasClass('tablecell')).toEqual(true);
+        });
+        it('adds cell classes to cells with no aggregate', function(){
+            var totaliser = sinon.spy(function(memo, value){
+                    memo = memo + value;
+                    return memo;
+                });
+            table = tabler.create([
+                {field: 'column1', className: 'firstColumn', aggregatorText: 'Total'},
+                {field: 'column2', className: 'secondColumn', aggregator: totaliser},
+                {field: 'column3', className: 'nonAggregateColumn'}
+            ], {plugins: [aggregator], cellClassName: 'tablecell'});
+
+            table.load([
+                {column1: 2},
+                {column1: 4}
+            ]);
+            table.render();
+
+            expect(table.$('tfoot td').eq(2).hasClass('tablecell')).toEqual(true);
+            expect(table.$('tfoot td').eq(2).hasClass('nonAggregateColumn')).toEqual(true);
+        });
     });
 });
