@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if IE 7 ]>    <html class="no-js ie ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie ie8"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <title>Tabler Test Runner</title>
+
+    <link rel="stylesheet" href="lib/mocha/mocha.css" />
+
+    <script src="lib/mocha/mocha.js"></script>
+    <script src="lib/expectations.js"></script>
+    <script src="lib/sinon-1.1.0.js"></script>
+    <script src="/testem.js"></script>
+
+    <style>
+        body{
+            background-color:#FFF !important;
+            font-size:14px;
+            max-width:770px;
+            margin-right:260px;
+        }
+        #testArea{
+            position:absolute;
+            top:-10000px;
+            left:-10000px;
+            height:500px;
+            width: 770px;
+        }
+    </style>
+</head>
+<body>
+    <div id="testArea"></div>
+    <div id="mocha"></div>
+
+    <script>
+        var require = {
+            baseUrl: '../',
+            paths: {
+                'jquery': 'tests/lib/jquery-1.7.1',
+                'underscore': 'tests/lib/underscore'
+            },
+            shim: {
+                'underscore': {
+                    exports: '_'
+                }
+            }
+        };
+        if(!window.console){
+            window.console = {
+                log: function(){},
+                warn: function(){},
+                error: function(){}
+            };
+        }
+        window.console.trace = window.console.trace || function(){};
+        window.console.time = window.console.time || function(){};
+        window.console.timeEnd = window.console.timeEnd || function(){};
+    </script>
+    <script src="lib/require.js" data-main="test/loader.js"></script>
+
+</body>
+</html>

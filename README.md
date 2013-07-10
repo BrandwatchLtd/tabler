@@ -1,7 +1,9 @@
 Tabler.js
 ========
 
-A lightweight library for building dynamic tables. [View the demos][http://brandwatchltd.github.com/tabler/demo/]
+[![Build Status](https://travis-ci.org/BrandwatchLtd/tabler.png)](https://travis-ci.org/BrandwatchLtd/tabler)
+
+A lightweight library for building dynamic tables. [View the demos](http://brandwatchltd.github.com/tabler/demo/)
 
 ## Including tabler in your project
 
@@ -83,7 +85,11 @@ It supports the following set of parameters:
 
 * plugins: An array of plugins to load into this instance (see below)
 * className: A CSS classname to put on the <table> element
-* fetch: A function(options, callback) that will be called during `render` to fetch the data to be displayed.  If this is given the `load` method will have no effect and you will be responsible for applying paging, sorting etc - you will be supplied the necessary values through the `options` hash.  When you are ready to call back with the data to render, you can call `callback` with an object with an `items` array of the returned results and a `totalResults` value which is the total number of results in the overall results set
+* fetch: A function(options, callback) that will be called during `render` to fetch the data to be displayed.  If this is given the `load` method will have no effect and you will be responsible for applying paging, sorting etc - you will be supplied the necessary values through the `options` hash.  When you are ready to call back with the data to render, you can call `callback` with an object with an `items` array of the returned results and a `totalResults` value which is the total number of results in the overall results set (ie not just the current page but *all* items across all pages)
+
+### Additional Methods
+
+* update(index, object): update the row at `index` with the data given in `object`, allows you to partially update one row of the table at a time
 
 ## Using Plugins
 
@@ -188,7 +194,3 @@ Used in conjunction with the pager plugin, adds a "Jump to page" input box into 
 ### removeColumns
 
 Adds an "x" link to each toggleable column header and column group, which disables the column when clicked
-
-### infiniTable (infinite scrolling)
-
-Changes the pager plugin to support infinite scrolling instead - new results will be pulled in as the tables container is scrolled
