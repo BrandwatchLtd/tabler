@@ -111,6 +111,17 @@ define([
             expect(table.$('tfoot tr td ol.pager li:last').text()).toEqual('3');
             expect(table.$('tfoot tr td ol.pager li:last').data('page')).toEqual(2);
         });
+        it('calls renderFootTr on render', function(){
+            table.renderFootTr = function(){
+                return '<tr class="rabbitfoot">';
+            };
+           
+            table.render(); 
+
+            expect(table.$('tfoot tr.rabbitfoot').length).toEqual(1);
+            // didn't render this anywhere else
+            expect(table.$('.rabbitfoot').length).toEqual(1);
+        });
         describe('links when lots of pages', function(){
             var testData = (function generateData(i, data){
                 if(i-- === 0){
