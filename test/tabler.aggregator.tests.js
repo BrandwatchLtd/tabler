@@ -111,5 +111,29 @@ define([
             expect(table.$('tfoot td').eq(2).hasClass('tablecell')).toEqual(true);
             expect(table.$('tfoot td').eq(2).hasClass('nonAggregateColumn')).toEqual(true);
         });
+        it('calls renderFootTr on render', function(){
+            var totaliser = function(memo, value){
+                    memo = memo + value;
+                    return memo;
+                };
+            table = tabler.create([
+                {field: 'column1', className: 'firstColumn', aggregatorText: 'Total'},
+                {field: 'column2', className: 'secondColumn', aggregator: totaliser}
+            ], {plugins: [aggregator]});
+
+            table.renderFootTr = function(){
+                return '<tr class="rabbitfoot">';
+            };
+
+            table.load([
+                {column1: 2},
+                {column1: 4}
+            ]);
+            table.render();
+
+            expect(table.$('tfoot tr.rabbitfoot').length).toEqual(1);
+            // didn't render this anywhere else
+            expect(table.$('.rabbitfoot').length).toEqual(1);
+        });
     });
 });
