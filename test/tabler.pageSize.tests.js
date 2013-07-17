@@ -110,6 +110,31 @@ define([
                 expect($pageSize.hasClass('pageSize')).toEqual(true);
                 expect($pageSize.find('select option').length).toEqual(3);
             });
+            it('can be used when rendered from pager', function(){
+                var PageSize = pageSize,
+                    Pager = pager,
+                    p = new Pager(),
+                    ps = new PageSize(),
+                    $pager,
+
+                    $div = $('<div />'),
+                    instance = {
+                        $el: $div,
+                        pager: p
+                    };
+
+                p.attach(instance);
+                ps.attach(instance);
+
+                p.currentPage = 3;
+                p.totalResults = 10;
+
+                $pager = $(p.render());
+
+                expect($pager.is('p')).toEqual(true);
+                expect($pager.hasClass('pageSize')).toEqual(true);
+                expect($pager.find('select option').length).toEqual(3);
+            });
         });
     });
 });
