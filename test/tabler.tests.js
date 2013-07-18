@@ -83,7 +83,7 @@ define([
                 expect(table.$('tr').eq(5).find('td').eq(0).text()).toEqual('false');
                 expect(table.$('tr').eq(6).find('td').eq(0).text()).toEqual('0');
             });
-            it('can have a global className override for cells', function(){
+            it('can have a global className addition for cells', function(){
                 table = tabler.create([
                     {field: 'column1'}
                 ], {
@@ -114,6 +114,23 @@ define([
                 table.render();
 
                 expect(table.spec[0].className).toEqual('bar');
+            });
+            it('can have a global className addition override for header cells', function(){
+                table = tabler.create([
+                    {field: 'column1'}
+                ], {
+                    headerCellClassName: 'foo'
+                });
+
+                table.load([
+                    {column1: 'column 1a', column2: 'column 2a'}
+                ]);
+
+                table.render();
+
+                _(table.$('thead th')).forEach(function(th){
+                    expect(th.className.split(' ')).toContain('foo');
+                });
             });
         });
         describe('specs', function(){
