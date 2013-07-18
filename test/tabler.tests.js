@@ -308,6 +308,30 @@ define([
                 expect(table.$('tbody tr td').eq(0).attr('class')).toEqual('foo');
                 expect(table.$('tbody tr td').eq(1).attr('class')).toEqual('testing foo');
             });
+            it('can give rows their own CSS class with a table options', function(){
+                table = tabler.create([
+                    {field: 'column1', name: 'Column 1'},
+                    {field: 'column2', name: 'Column 2', className: 'testing'}
+                ], {
+                    headRowClassName: 'headclass',
+                    bodyRowClassName: 'bodyclass',
+                    footRowClassName: 'footclass'
+                });
+
+                // needed to be able to test the footer
+                table.renderFoot = function(){
+                    return this.renderFootTr() + '<td colspan="2">dummy</td></tr>';
+                };
+
+                table.load([
+                    {column1: 'column 1a', column2: 'column 2a'}
+                ]);
+                table.render();
+
+                expect(table.$('thead tr').hasClass('headclass')).toEqual(true);
+                expect(table.$('tbody tr').hasClass('bodyclass')).toEqual(true);
+                expect(table.$('tfoot tr').hasClass('footclass')).toEqual(true);
+            });
             it('can give columns a width and a CSS class', function(){
                 table = tabler.create([
                     {field: 'column1', name: 'Column 1', width: '25%'},
