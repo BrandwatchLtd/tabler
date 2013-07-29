@@ -500,7 +500,7 @@ define([
                 expect(table.$('tbody tr:eq(1) td:eq(1)').text()).toEqual('column 2b');
                 expect(table.$('tbody tr:eq(1) td:eq(2)').text()).toEqual('column 3b');
             });
-            it('only touches the row at the given index when updating', function(){
+            it('does not replace the rows when updating', function(){
                 var $row1 = table.$('tbody tr:eq(0)'),
                     $row2 = table.$('tbody tr:eq(1)');
 
@@ -510,8 +510,54 @@ define([
                     column3: 'updated column 3a'
                 });
 
+                expect($row1.parent().length).toEqual(1);
+                expect($row2.parent().length).toEqual(1);
+            });
+            it('only touches the cells that have changed', function(){
+                table.$('tbody tr:eq(0) td:eq(0)').text('modified column 1a');
+
+                table.update(0, {
+                    column3: 'updated column 3a'
+                });
+
+                expect(table.$('tbody tr:eq(0) td:eq(0)').text()).toEqual('modified column 1a');
+                expect(table.$('tbody tr:eq(0) td:eq(1)').text()).toEqual('column 2a');
+                expect(table.$('tbody tr:eq(0) td:eq(2)').text()).toEqual('updated column 3a');
+            });
+            it('updates other cells which have an updateFields property containing the modified field name', function(){
+                table.$('tbody tr:eq(0) td:eq(0)').text('modified column 1a');
+
+                table.spec[0].updateFields = ['otherColumn'];
+                table.spec[0].formatter = function(value, spec, row){
+                    return row.otherColumn;
+                };
+
+                table.update(0, {
+                    otherColumn: 'another column',
+                    column3: 'updated column 3a'
+                });
+
+                expect(table.$('tbody tr:eq(0) td:eq(0)').text()).toEqual('another column');
+                expect(table.$('tbody tr:eq(0) td:eq(1)').text()).toEqual('column 2a');
+                expect(table.$('tbody tr:eq(0) td:eq(2)').text()).toEqual('updated column 3a');
+            });
+            it('replaces the entire row when updating with invalidateRow: true', function(){
+                var $row1 = table.$('tbody tr:eq(0)'),
+                    $row2 = table.$('tbody tr:eq(1)');
+
+                table.update(0, {
+                    column1: 'updated column 1a',
+                    column2: 'updated column 2a',
+                    column3: 'updated column 3a'
+                }, {invalidateRow: true});
+
+                // Row 1 has been replaced with a new version
                 expect($row1.parent().length).toEqual(0);
                 expect($row2.parent().length).toEqual(1);
+
+                expect(table.$('tbody tr:eq(0) td:eq(0)').text()).toEqual('updated column 1a');
+                expect(table.$('tbody tr:eq(0) td:eq(1)').text()).toEqual('updated column 2a');
+                expect(table.$('tbody tr:eq(0) td:eq(2)').text()).toEqual('updated column 3a');
             });
         });
         describe('dynamic data', function(){
