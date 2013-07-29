@@ -87,9 +87,16 @@ It supports the following set of parameters:
 * className: A CSS classname to put on the <table> element
 * fetch: A function(options, callback) that will be called during `render` to fetch the data to be displayed.  If this is given the `load` method will have no effect and you will be responsible for applying paging, sorting etc - you will be supplied the necessary values through the `options` hash.  When you are ready to call back with the data to render, you can call `callback` with an object with an `items` array of the returned results and a `totalResults` value which is the total number of results in the overall results set (ie not just the current page but *all* items across all pages)
 
-### Additional Methods
 
-* update(index, object): update the row at `index` with the data given in `object`, allows you to partially update one row of the table at a time
+### Partial updates of rows
+
+Call `update(index, object, options)` to update the row at `index` with the data given in `object`, allows you to partially update one row of the table at a time
+
+The updates are actually applied at a _td_ level, by inspecting the fields given in `object` and only updating cells with a `field` set to those values.
+
+This can cause issues if you have a customer `formatter` that looks at other fields, so you can use the `updateFields` property to give tabler an extra *hint* about which columns should update
+
+If you want to turn this off completely, and force a re-render of the entire row, pass `invalidateRow: true` in the `options`
 
 ## Using Plugins
 
