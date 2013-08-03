@@ -23,7 +23,8 @@ define([
     'use strict';
     /*globals console*/
     describe('performance', function(){
-        var massiveSpec = [
+        var iters = 50,
+            massiveSpec = [
             {id: '0', field: 'field0', groupName: 'group1', formatter: function(){return 'field0';}},
             {id: '1', field: 'field1', groupName: 'group1', formatter: function(){return 'field1';}},
             {id: '2', field: 'field2', groupName: 'group2', formatter: function(){return 'field2';}},
@@ -73,37 +74,27 @@ define([
                 ]
             });
         }
-        it('can instantiate 100,000 regular instances/sec', function(){
+        it('can instantiate a regular instance in < 1ms', function(){
             var start = new Date().getTime(),
-                tables = [];
+                i = iters;
 
-            while(true){
-                tables.push(tabler.create(massiveSpec));
-                if((new Date().getTime() - start) > 1000){
-                    break;
-                }
+            while(i--){
+                tabler.create(massiveSpec);
             }
 
-            expect(tables.length).toBeGreaterThan(100000);
-
-            tables = [];
+            expect((new Date().getTime() - start) / iters).toBeLessThan(1);
         });
-        it('can instantiate 10,000 fully-loaded instances/sec', function(){
+        it('can instantiate a fully-loaded instance in < 2ms', function(){
             var start = new Date().getTime(),
-                tables = [];
+                i = iters;
 
             console.profile('fully loaded');
-            while(true){
-                tables.push(createFullyLoadedTabler());
-                if((new Date().getTime() - start) > 1000){
-                    break;
-                }
+            while(i--){
+                createFullyLoadedTabler();
             }
             console.profileEnd('fully loaded');
 
-            expect(tables.length).toBeGreaterThan(10000);
-
-            tables = [];
+            expect((new Date().getTime() - start) / iters).toBeLessThan(2);
         });
     });
 });
