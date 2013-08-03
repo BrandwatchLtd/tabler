@@ -48,24 +48,12 @@ define([
             {id: '32', field: 'field32', groupName: 'group6', formatter: function(){return 'field32';}},
             {id: '33', field: 'field33', groupName: 'group6', formatter: function(){return 'field33';}}
         ];
-        function createFullyLoadedTabler(){
-            return tabler.create(_.map(massiveSpec, _.clone), [
-                aggregator,
-                columnGrouper,
-                jumpToPage,
-                pager,
-                pageSize,
-                removeColumns,
-                sortable,
-                toggleColumns
-            ]);
-        }
-        it('can instantiate 100,000 fully-loaded instances/sec', function(){
+        it('can instantiate 100,000 minimal instances/sec', function(){
             var start = new Date().getTime(),
                 tables = [],
                 elapsed;
             for(var i = 0; i < 100000; i++){
-                tables.push(createFullyLoadedTabler());
+                tables.push(tabler.create(massiveSpec));
             }
             elapsed = new Date().getTime() - start;
             expect(elapsed).toBeLessThan(1000);
