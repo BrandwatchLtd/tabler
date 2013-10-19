@@ -35,6 +35,16 @@ define([
             expect(table.$('tfoot tr td').attr('colspan')).toEqual('2');
             expect(table.$('tfoot tr td ol.pager').length).toEqual(1);
         });
+        it('can add a pager wirh a custom css class', function(){
+            var customClassName = 'fancyPantsClassName';
+
+            table.pager.cssClass = customClassName;
+
+            table.render();
+
+            expect(table.$('tfoot tr td ol').length).toEqual(1);
+            expect(table.$('tfoot tr td ol').hasClass(customClassName)).toEqual(true);
+        });
         it('only renders pageSize worth of data', function(){
             table.pager.pageSize = 2;
             table.render();
@@ -115,8 +125,8 @@ define([
             table.renderFootTr = function(){
                 return '<tr class="rabbitfoot">';
             };
-           
-            table.render(); 
+
+            table.render();
 
             expect(table.$('tfoot tr.rabbitfoot').length).toEqual(1);
             // didn't render this anywhere else
