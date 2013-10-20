@@ -100,6 +100,27 @@ define([
                 pageSize: 2
             });
         });
+
+        it('triggers "paged" events on clicking page links, when the pager has a custom css class', function(){
+            var pagedSpy = sinon.spy(),
+                customClassName = 'fancyPantsClassName';
+
+            table.pager.cssClass = customClassName;
+
+            table.bind('paged', pagedSpy);
+            table.pager.pageSize = 2;
+
+            table.render();
+
+            table.$('tfoot tr td ol.' + customClassName +  ' li[data-page=1]').click();
+
+            expect(pagedSpy.calledOnce).toEqual(true);
+            expect(pagedSpy.args[0][0]).toEqual({
+                currentPage: 1,
+                pageSize: 2
+            });
+        });
+
         it('renders Previous link when on page > 1', function(){
             table.pager.pageSize = 2;
 
