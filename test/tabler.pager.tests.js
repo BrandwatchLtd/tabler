@@ -35,7 +35,7 @@ define([
             expect(table.$('tfoot tr td').attr('colspan')).toEqual('2');
             expect(table.$('tfoot tr td ol.pager').length).toEqual(1);
         });
-        it('can add a pager wirh a custom css class', function(){
+        it('can add a pager with a custom css class', function(){
             var customClassName = 'fancyPantsClassName';
 
             table.pager.cssClass = customClassName;
@@ -93,6 +93,25 @@ define([
             table.render();
 
             table.$('tfoot tr td ol.pager li[data-page=1]').click();
+
+            expect(pagedSpy.calledOnce).toEqual(true);
+            expect(pagedSpy.args[0][0]).toEqual({
+                currentPage: 1,
+                pageSize: 2
+            });
+        });
+        it('triggers "paged" events on clicking page links, when the pager has a custom css class', function(){
+            var pagedSpy = sinon.spy(),
+                customClassName = 'fancyPantsClassName';
+
+            table.pager.cssClass = customClassName;
+
+            table.bind('paged', pagedSpy);
+            table.pager.pageSize = 2;
+
+            table.render();
+
+            table.$('tfoot tr td ol.' + customClassName +  ' li[data-page=1]').click();
 
             expect(pagedSpy.calledOnce).toEqual(true);
             expect(pagedSpy.args[0][0]).toEqual({
