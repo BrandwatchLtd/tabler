@@ -7,27 +7,33 @@ define([
         pageSize){
     'use strict';
     describe('tabler.pageSize', function(){
-        var table;
+        var table,
+            rowData = [],
+            i;
+
+        for (i = 0; i < 200; i++){
+            rowData.push({
+                column1 : 'a' + i,
+                column2 : 'b' + i
+            });
+        }
+
         afterEach(function(){
             if(table){
                 table.destroy();
                 table = undefined;
             }
         });
+
         beforeEach(function(){
             table = tabler.create([
                 {field: 'column1'}
             ], {plugins: [pager, pageSize]});
 
             table.pager.pageSize =  2;
-            table.load([
-                {column1: '1a', column2: '2a'},
-                {column1: '1b', column2: '2b'},
-                {column1: '1c', column2: '2c'},
-                {column1: '1d', column2: '2d'},
-                {column1: '1e', column2: '2e'}
-            ]);
+            table.load(rowData);
         });
+
         it('throws error when pager plugin not loaded', function(){
             try{
                 table = tabler.create([], [pageSize]);
@@ -79,14 +85,19 @@ define([
             expect(table.$('tfoot td p.pageSize select option').eq(1).val()).toEqual('20');
         });
         it('re-renders the table with the correct number of results on page size update', function(){
+
+            var pageSize = 50,
+                expectedRows = Math.min(pageSize, rowData.length);
+
             table.pager.currentPage = 2;
             table.render();
 
             table.$('tfoot p.pageSize select').val(50).change();
 
-            expect(table.pager.pageSize).toEqual(50);
+            expect(table.pager.pageSize).toEqual(pageSize);
             expect(table.pager.currentPage).toEqual(0);
-            expect(table.$('tbody tr').length).toEqual(5);
+
+            expect(table.$('tbody tr').length).toEqual(expectedRows);
         });
         describe('standalone', function(){
             it('can be used without a tabler instance', function(){
