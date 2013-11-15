@@ -151,14 +151,16 @@ Adds a pager to the footer of the table, with next/prev/first/last links & clien
 
     table.addPlugin(pager, {
         pageSize: 20,
-        currentPage: 1
+        currentPage: 1,
+        hideWhenOnePage: true
     });
     table.render();
 
 Options:
 
-* pageSize: The size of each page
-* currentPage: The current page index, 0-based
+* pageSize: The size of each page. Defaults to `20`
+* currentPage: The current page index, zero-based. Defaults to `0`
+* hideWhenOnePage: Hides the controls when there is just one page to display. Defaults to `false`
 * totalResults: The total number of results (useful for server-side paging)
 
 If you have your own `fetch` override function, you will get a `pageSize` and `currentPage` parameter in the `options` hash to perform your own paging with
