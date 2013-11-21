@@ -8,6 +8,7 @@
         <script src="underscore.js"></script>
         <script src="../lib/tabler/tabler.js"></script>
         <script src="../lib/tabler/tabler.pager.js"></script>
+        <script src="../lib/tabler/tabler.sortable.js"></script>
 
         <script>
             // Use your own key!
@@ -140,6 +141,40 @@
                     pagedTable.render();
 
                     $('#pagedTable').html(pagedTable.$el);
+                </script>
+            </div>
+
+            <div id="sortable-table">
+                <h2>Sortable table  <a href="#sortable-table" class="icon-tag"></a></h2>
+                <div id="sortableTable"></div>
+
+                <script>
+                    var sortableTable = tabler.create([
+                            {field:'name', name: 'Name', sortable: true},
+                            {field:'appearsIn', name: 'Appears in', sortable: true}
+                        ], {
+                            className: 'table',
+                            plugins: [tabler.sortable]
+                        });
+
+                    sortableTable.load([
+                        {name: 'Feathers McGraw', appearsIn: 'The Wrong Trousers'},
+                        {name: 'Wendolene', appearsIn: 'A Close Shave'},
+                        {name: 'Preston', appearsIn: 'A Close Shave'},
+                        {name: 'Shaun', appearsIn: 'A Close Shave'},
+                        {name: 'Piella Bakewell', appearsIn: 'A Matter of Loaf and Death'},
+                        {name: 'Fluffles', appearsIn: 'A Matter of Loaf and Death'},
+                        {name: 'Lady Tottington', appearsIn: 'The Curse of the Were-rabbit'},
+                        {name: 'Victor Quartermain', appearsIn: 'The Curse of the Were-rabbit'},
+                        {name: 'Rev. Clement Hedges', appearsIn: 'The Curse of the Were-rabbit'},
+                        {name: 'Hutch', appearsIn: 'The Curse of the Were-rabbit'},
+                        {name: 'Mr & Mrs Mulch', appearsIn: 'The Curse of the Were-rabbit'},
+                        {name: 'Mr Growbag', appearsIn: 'The Curse of the Were-rabbit'},
+                    ]);
+
+                    sortableTable.render();
+
+                    $('#sortableTable').html(sortableTable.$el);
                 </script>
             </div>
         </div>
