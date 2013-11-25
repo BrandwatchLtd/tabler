@@ -188,7 +188,7 @@ Options:
 * field: the (default) field to sort by
 * dir: the (default) sort direction (`asc`, `desc`) - defaults to `desc`
 
-If you have your own `fetch` override function, you will get a `sortField` and `sortDirection` parameter in the `options` hash to perform your own sorting with
+If you have your own `fetch` override function, you will get a `field` and `direction` parameter in the `options` hash to perform your own sorting with
 
 ### toggleColumns
 
