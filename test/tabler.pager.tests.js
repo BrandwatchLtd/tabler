@@ -47,6 +47,15 @@ define([
                 });
             });
 
+            describe('when there are no results', function(){
+                it('adds no pager ol when there are zero pages', function(){
+                    table.load([]);
+                    table.render();
+
+                    expect(table.$('tfoot tr td ol.pager').length).toEqual(0);
+                });
+            });
+
             describe('when there\'s many pages', function(){
                 it('adds pager ol to the tfoot of the table', function(){
                     // make sure that paging is needed
