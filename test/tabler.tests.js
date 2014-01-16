@@ -560,6 +560,24 @@ define([
                 expect(table.$('> tbody tr:eq(0) td:eq(1)').text()).toEqual('updated column 2a');
                 expect(table.$('> tbody tr:eq(0) td:eq(2)').text()).toEqual('updated column 3a');
             });
+            it('passes row index to renderCell', function(){
+                var renderCellSpy = sinon.spy(table, 'renderCell');
+                table.update(1, {
+                    column1: 'updated column 1b'
+                });
+
+                expect(renderCellSpy.calledOnce).toEqual(true);
+                expect(renderCellSpy.args[0][2]).toEqual(1);
+
+                table.update(0, {
+                    column3: 'updated column 3a'
+                });
+
+                expect(renderCellSpy.calledTwice).toEqual(true);
+                expect(renderCellSpy.args[1][2]).toEqual(0);
+
+                renderCellSpy.restore();
+            });
         });
         describe('dynamic data', function(){
             it('calls "fetch" method on render if specified', function(){
