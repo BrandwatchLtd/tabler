@@ -19,6 +19,7 @@ require(['jquery',
         'test/tabler.pageSize.tests',
         'test/tabler.pager.tests',
         'test/tabler.toggleColumns.tests',
+        'test/tabler.removeColumns.tests',
         'test/tabler.sortable.tests',
         'test/tabler.columnGrouper.tests'
     ], function(){
