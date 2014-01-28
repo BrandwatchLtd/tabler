@@ -84,6 +84,36 @@ define([
                 expect(table.$('tr').eq(5).find('td').eq(0).text()).toEqual('false');
                 expect(table.$('tr').eq(6).find('td').eq(0).text()).toEqual('0');
             });
+            it('escapes html entities in cells', function(){
+                table = tabler.create([
+                    {field: 'column1'}
+                ]);
+                table.load([{column1: '<script>alert("yolo");</script>'}]);
+                table.render();
+
+                expect(table.$('tbody td:first').length).toEqual(1);
+                expect(table.$('tbody td:first').html()).toEqual('&lt;script&gt;alert("yolo");&lt;/script&gt;');
+            });
+            it('escapes html entities in cells for default values', function(){
+                table = tabler.create([
+                    {field: 'column1', defaultText: '<script>alert("yolo");</script>'}
+                ]);
+                table.load([{column1: ''}]);
+                table.render();
+
+                expect(table.$('tbody td:first').length).toEqual(1);
+                expect(table.$('tbody td:first').html()).toEqual('&lt;script&gt;alert("yolo");&lt;/script&gt;');
+            });
+            it('escapes html entities in heading cells', function(){
+                table = tabler.create([
+                    {name:'<script>alert("yolo");</script>', field: 'column1'}
+                ]);
+                table.load([{column1: ''}]);
+                table.render();
+
+                expect(table.$('thead th:first').length).toEqual(1);
+                expect(table.$('thead th:first').html()).toEqual('&lt;script&gt;alert("yolo");&lt;/script&gt;');
+            });
             it('can have a global className addition for cells', function(){
                 table = tabler.create([
                     {field: 'column1'}
