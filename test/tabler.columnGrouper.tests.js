@@ -87,6 +87,27 @@ define([
             expect(table.$('thead tr:first th').length).toEqual(1);
             expect(table.$('thead tr:first th').html().toLowerCase()).toEqual('<span>group 1 spans 2 columns</span>');
         });
+        it('escapes html entities in the group name by default', function(){
+            var columns = {field: 'column1', name: 'Column 1', groupName: '<script>alert("barbaz");</script>'};
+
+            table = tabler.create([columns], {plugins: [columnGrouper]});
+            table.load([{column1: 'column 1a', column2: 'column 2a'}]);
+            table.render();
+
+            expect(table.$('thead th').html()).toBe('&lt;script&gt;alert("barbaz");&lt;/script&gt;');
+        });
+        it('does not escapes html if a group name formatter is provided', function(){
+            var columns = {field: 'column1', name: 'Column 1', groupName: 'group1'},
+                options = {formatters: {
+                  group1: function(spec){ return '<span>help</span>' }
+                }};
+
+            table = tabler.create([columns], {plugins: [columnGrouper], columnGrouper: options});
+            table.load([{column1: 'column 1a', column2: 'column 2a'}]);
+            table.render();
+
+            expect(table.$('thead th').html()).toBe('<span>help</span>');
+        });
         it('can take classname to add to every group header cell', function(){
             table = tabler.create([
                 {field: 'column1', name: 'Column 1', groupName: 'Group 1'},

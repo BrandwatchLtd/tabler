@@ -15,8 +15,7 @@
   "dependencies": {},
   "devDependencies": {
     "serve": "*",
-    "mocha": "~1.7.4",
-    "testem": "~0.6.6"
+    "mocha": "~1.7.4"
   },
   "optionalDependencies": {},
   "volo": {
