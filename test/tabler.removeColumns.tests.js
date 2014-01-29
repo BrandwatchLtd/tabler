@@ -47,6 +47,26 @@ define([
             expect(table.$('thead tr:eq(0) th > span').length).toEqual(table.$('thead tr:eq(0) th').length);
             expect(table.$('thead tr:eq(1) th > span').length).toEqual(table.$('thead tr:eq(1) th').length);
         });
+        it('escapes the value if no heading formatter is provided', function(){
+            table = tabler.create([
+                {field: 'column1', name: '<script>alert("foobar");</script>'}
+            ], {plugins: [columnGrouper, removeColumns]});
+
+            table.load([{column1: '1a'}]);
+            table.render();
+
+            expect(table.$('thead th').html()).toContain('&lt;script&gt;alert("foobar");&lt;/script&gt;');
+        });
+        it('escapes the value if no group formatter is provided', function(){
+            table = tabler.create([
+                {field: 'column1', groupName: '<script>alert("foobar");</script>'}
+            ], {plugins: [columnGrouper, removeColumns]});
+
+            table.load([{column1: '1a'}]);
+            table.render();
+
+            expect(table.$('thead th').html()).toContain('&lt;script&gt;alert("foobar");&lt;/script&gt;');
+        });
         it('disables the column on click of a.removeColumn', function(){
             table.$('thead tr:last th:eq(0) a.removeColumn').click();
 

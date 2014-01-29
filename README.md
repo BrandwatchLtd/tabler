@@ -73,6 +73,8 @@ The Default set of configuration parameters are:
 * headerFormatter: A function(colSpec, title) that returns formatted HTML for the column header (eg wrap in a link)
 * disabled: true/false whether the table should render the column at all
 
+NOTE: If a formatter is provided, it is the responsibility of that function to escape any user input such as `row` values using `_.escape()` or equivalent. Tabler will always escape the `value` argument for you.
+
 Plugins may add support for additional parameters (see below)
 
 ### Additional tabler options

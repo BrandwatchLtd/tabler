@@ -67,18 +67,13 @@ define([
             expect(table.$('thead th').hasClass('myClass')).toEqual(true);
         });
         it('can call preventDefault when header child element clicked (prevent navigating away from page)', function(){
-            var preventDefaultSpy = sinon.spy(),
-            clickEvent = {
-                type: 'click',
-                preventDefault: preventDefaultSpy
-            };
-
+            var event = jQuery.Event('click');
             table = tabler.create([
                 {
                     field: 'column1',
                     sortable: true,
                     headerFormatter: function(colSpec, title){
-                        return title.replace(/<\/a>$/i, '<span title="This feature is in BETA" class="betaIcon"></span>' + '</a>');
+                        return title + ' <span title="This feature is in BETA" class="betaIcon"></span>';
                     }
                 }
             ], {plugins: [sortable]});
@@ -90,9 +85,9 @@ define([
             ]);
             table.render();
 
-            table.$('thead th:first a.sort span.betaIcon').trigger(clickEvent);
+            table.$('thead th:first a.sort span.betaIcon').trigger(event);
 
-            expect(preventDefaultSpy.called).toEqual(true);
+            expect(event.isDefaultPrevented()).toEqual(true);
         });
         it('client-side sorts descending on first header click', function(){
             table = tabler.create([
@@ -311,6 +306,28 @@ define([
             table.addToSpec({field: 'column2', sortable: true});
 
             expect(table.spec[1].className.trim()).toEqual('sortable');
+        });
+        it('does escapes content when no header formatter is provided', function(){
+            var columns = [{name: '<script>alert("rofl");</script>', field: 'column1', sortable: true}];
+
+            table = tabler.create(columns, {plugins: [sortable]});
+            table.load([{column1: 20}]);
+            table.render();
+
+            expect(table.$('thead th').html()).toEqual('<a href="#" class="sort" data-sort-key="column1">&lt;script&gt;alert("rofl");&lt;/script&gt;</a>');
+        });
+        it('does not escape content when a header formatter is provided', function(){
+            var columns = [{name: 'My Header', field: 'column1', headerFormatter: formatter, sortable: true}];
+
+            function formatter(column, value){
+              return _.escape(value) + ' <span class="help">Help</span>';
+            }
+
+            table = tabler.create(columns, {plugins: [sortable]});
+            table.load([{column1: 20}]);
+            table.render();
+
+            expect(table.$('thead th').html()).toEqual('<a href="#" class="sort" data-sort-key="column1">My Header <span class="help">Help</span></a>');
         });
         it('does not sort when new anchors added by header formatters are clicked', function() {
             var renderSpy;
