@@ -21,7 +21,8 @@ require(['jquery',
         'test/tabler.toggleColumns.tests',
         'test/tabler.removeColumns.tests',
         'test/tabler.sortable.tests',
-        'test/tabler.columnGrouper.tests'
+        'test/tabler.columnGrouper.tests',
+        'test/performance.tests'
     ], function(){
     'use strict';
     mocha.run();
