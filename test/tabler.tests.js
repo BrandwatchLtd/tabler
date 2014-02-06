@@ -663,6 +663,22 @@ define([
 
                 expect(table.$el.hasClass('loading')).toEqual(false);
             });
+            it('if a fetch parameter is specified, it cannot be overridden / redefined', function(){
+                var fetchSpy = sinon.spy(),
+                    redefinedFetchSpy = sinon.spy(),
+                    table = tabler.create({
+                        fetch: fetchSpy
+                    });
+
+                table.render();
+                expect(fetchSpy.callCount).toEqual(1);
+
+                table.fetch = redefinedFetchSpy;
+
+                table.render();
+                expect(fetchSpy.callCount).toEqual(2);
+                expect(redefinedFetchSpy.callCount).toEqual(0);
+            });
         });
         describe('plugins', function(){
             it('can create with plugins', function(){
