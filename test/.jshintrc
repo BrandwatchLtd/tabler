@@ -20,12 +20,8 @@
     "undef": true,
     "unused": true,
     "maxdepth": 3,
-    "maxcomplexity": 10,
     "maxlen": 140,
     "camelcase": true,
-    "maxstatements": 20,
-    "maxparams": 3,
-    "indent": 4,
 
     "predef":
     [

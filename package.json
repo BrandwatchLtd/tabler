@@ -16,7 +16,8 @@
   "devDependencies": {
     "serve": "*",
     "mocha": "~1.7.4",
-    "testem": "~0.6.7"
+    "testem": "~0.6.7",
+    "jshint": "~2.4.3"
   },
   "optionalDependencies": {},
   "volo": {
@@ -26,8 +27,9 @@
     }
   },
   "scripts": {
-      "test": "./testem",
-      "run": "./serve.sh"
+    "test": "./testem",
+    "run": "./serve.sh",
+    "lint": "./jshint"
   },
   "testling": {
     "browsers": [
