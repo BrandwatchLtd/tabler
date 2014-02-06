@@ -663,6 +663,25 @@ define([
 
                 expect(table.$el.hasClass('loading')).toEqual(false);
             });
+            it('if a fetch parameter is specified, default fetch function is not called', function(){
+                var fetchSpy = sinon.spy(),
+                    doFetchSpy = sinon.spy(tabler.prototype, '_doFetch'),
+                    table = tabler.create();
+
+                table.load([
+                    {column1: 'column 1a', column2: 'column 2a'}
+                ]);
+                table.render();
+                expect(doFetchSpy.callCount).toEqual(1);
+
+                table = tabler.create({
+                    fetch: fetchSpy
+                });
+
+                table.render();
+                expect(fetchSpy.callCount).toEqual(1);
+                expect(doFetchSpy.callCount).toEqual(1);
+            });
         });
         describe('plugins', function(){
             it('can create with plugins', function(){
