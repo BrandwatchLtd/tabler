@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
+export NODE_ENV=development
 
-testem ci $@
+npm install
+`npm bin`/testem ci $@
