@@ -85,9 +85,35 @@ define([
             ]);
             table.render();
 
-            table.$('thead th:first a.sort span.betaIcon').trigger(event);
+            table.$('thead th:first a.sort').trigger(event);
 
             expect(event.isDefaultPrevented()).toEqual(true);
+        });
+        it('does not prevent default if a different anchor is clicked', function(){
+            var event = jQuery.Event('click'),
+                anchor = $('<a href="#">Remove</a>');
+
+            table = tabler.create([
+                {
+                    field: 'column1',
+                    sortable: true,
+                    headerFormatter: function(colSpec, title){
+                        return title + ' <span title="This feature is in BETA" class="betaIcon"></span>';
+                    }
+                }
+            ], {plugins: [sortable]}),
+
+            table.load([
+                {column1: 30},
+                {column1: 10},
+                {column1: 20}
+            ]);
+            table.render();
+
+            table.$('thead th:first').append(anchor);
+            anchor.trigger(event);
+
+            expect(event.isDefaultPrevented()).toEqual(false);
         });
         it('client-side sorts descending on first header click', function(){
             table = tabler.create([
@@ -131,6 +157,8 @@ define([
             expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('30');
         });
         it('sorts on TH click', function(){
+            var spy = sinon.spy();
+
             table = tabler.create([
                 {field: 'column1', sortable: true},
                 {field: 'column2', sortable: false}
@@ -141,15 +169,33 @@ define([
                 {column1: 10, column2: 400},
                 {column1: 20, column2: 600}
             ]);
+
             table.render();
+            table.bind('sorted', spy);
 
             table.$('thead th:first').click();
-            table.$('thead th:first').click();
 
-            expect(table.$('thead th:first').attr('class')).toEqual('sortable sorted-asc');
-            expect(table.$('tbody tr').eq(0).find('td').eq(0).text()).toEqual('10');
-            expect(table.$('tbody tr').eq(1).find('td').eq(0).text()).toEqual('20');
-            expect(table.$('tbody tr').eq(2).find('td').eq(0).text()).toEqual('30');
+            expect(spy.called).toBe(true);
+        });
+        it('sorts when clicking on a child of .sort', function(){
+            var spy = sinon.spy();
+
+            table = tabler.create([
+                {field: 'column1', sortable: true, headerFormatter: function(){
+                    return '<span>Column 1</span>';
+                }}
+            ], {plugins: [sortable]});
+
+            table.load([
+                {column1: 30, column2: 200},
+                {column1: 10, column2: 400},
+                {column1: 20, column2: 600}
+            ]);
+            table.render();
+            table.bind('sorted', spy);
+
+            table.$('thead th:first span').click();
+            expect(spy.called).toBe(true);
         });
         it('does not sort unsortable columns on TH click', function(){
             table = tabler.create([
