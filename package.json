@@ -1,7 +1,7 @@
 {
   "name": "tabler",
   "description": "Client-side table generation",
-  "version": "0.10.18",
+  "version": "0.10.19",
   "repository": {
     "type": "git",
     "url": "git://github.com/BrandwatchLtd/tabler.git"
