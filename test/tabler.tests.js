@@ -94,6 +94,29 @@ define([
                 expect(table.$('tbody td:first').length).toEqual(1);
                 expect(table.$('tbody td:first').html()).toEqual('&lt;script&gt;alert("yolo");&lt;/script&gt;');
             });
+            it('escapes html entities in cells with arrays of values', function(){
+                var escapedHtml = '<ul><li>foo</li><li>&lt;script&gt;alert("yolo");&lt;/script&gt;</li></ul>';
+
+                table = tabler.create([{
+                    field: 'column1',
+                    formatter: function(value){
+                        var lis = _(value).map(function(val){
+                            return '<li>'+ val + '</li>';
+                        }).join('');
+
+                        return '<ul>' + lis + '</ul>';
+                    }
+                }]);
+
+                table.load([
+                    { column1: ['foo', '<script>alert("yolo");</script>' ] }
+                ]);
+
+                table.render();
+
+                expect(table.$('tbody td:first').length).toEqual(1);
+                expect(table.$('tbody td:first').html()).toEqual(escapedHtml);
+            });
             it('escapes html entities in cells for default values', function(){
                 table = tabler.create([
                     {field: 'column1', defaultText: '<script>alert("yolo");</script>'}
