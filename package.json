@@ -15,7 +15,9 @@
   "dependencies": {},
   "devDependencies": {
     "serve": "*",
-    "mocha": "~1.7.4"
+    "mocha": "~1.7.4",
+    "testem": "~0.6.7",
+    "jshint": "~2.4.3"
   },
   "optionalDependencies": {},
   "volo": {
@@ -23,6 +25,11 @@
       "jquery": "jquery/jquery",
       "underscore": "documentcloud/underscore"
     }
+  },
+  "scripts": {
+    "test": "./testem",
+    "run": "./serve.sh",
+    "lint": "./jshint"
   },
   "testling": {
     "browsers": [

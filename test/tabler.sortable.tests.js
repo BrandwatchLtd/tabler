@@ -321,18 +321,18 @@ define([
             var fetchSpy = sinon.spy(function(options, callback){
                     callback({items: data});
                 }),
-                data;
+                data = [
+                    {column1: 30, column2: 200},
+                    {column1: 10, column2: 400},
+                    {column1: 20, column2: 600}
+                ];
 
             table = tabler.create([
                 {field: 'column1', sortable: true},
                 {field: 'column2', sortable: false}
-            ], {plugins: [sortable], fetch: fetchSpy}),
+            ], {plugins: [sortable], fetch: fetchSpy});
 
-            table.load(data = [
-                {column1: 30, column2: 200},
-                {column1: 10, column2: 400},
-                {column1: 20, column2: 600}
-            ]);
+            table.load(data);
             table.render();
 
             table.$('thead th:first a.sort').click();
@@ -360,20 +360,20 @@ define([
             table.load([{column1: 20}]);
             table.render();
 
-            expect(table.$('thead th').html()).toEqual('<a href="#" class="sort" data-sort-key="column1">&lt;script&gt;alert("rofl");&lt;/script&gt;</a>');
+            expect(table.$('thead th').html()).toEqual('<a href="#" class="sort" data-sort-key="column1">' +
+                '&lt;script&gt;alert("rofl");&lt;/script&gt;</a>');
         });
         it('does not escape content when a header formatter is provided', function(){
-            var columns = [{name: 'My Header', field: 'column1', headerFormatter: formatter, sortable: true}];
-
-            function formatter(column, value){
+            var columns = [{name: 'My Header', field: 'column1', headerFormatter: function(column, value){
               return _.escape(value) + ' <span class="help">Help</span>';
-            }
+            }, sortable: true}];
 
             table = tabler.create(columns, {plugins: [sortable]});
             table.load([{column1: 20}]);
             table.render();
 
-            expect(table.$('thead th').html()).toEqual('<a href="#" class="sort" data-sort-key="column1">My Header <span class="help">Help</span></a>');
+            expect(table.$('thead th').html()).toEqual('<a href="#" class="sort" data-sort-key="column1">' +
+                'My Header <span class="help">Help</span></a>');
         });
         it('does not sort when new anchors added by header formatters are clicked', function() {
             var renderSpy;

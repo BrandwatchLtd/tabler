@@ -99,7 +99,7 @@ define([
         it('does not escapes html if a group name formatter is provided', function(){
             var columns = {field: 'column1', name: 'Column 1', groupName: 'group1'},
                 options = {formatters: {
-                  group1: function(spec){ return '<span>help</span>' }
+                  group1: function(){ return '<span>help</span>'; }
                 }};
 
             table = tabler.create([columns], {plugins: [columnGrouper], columnGrouper: options});
@@ -324,7 +324,7 @@ define([
             expect(table.$('thead tr:eq(0) th:eq(2)').attr('class')).toEqual('lonely-group columngroupheader');
             expect(table.$('thead tr:eq(1) th:eq(0)').attr('class')).toEqual('fist');
             expect(table.$('thead tr:eq(1) th:eq(1)').attr('class')).toEqual('lst');
-            expect(table.$('thead tr:eq(1) th:eq(2)').attr('class')).toEqual('fist')
+            expect(table.$('thead tr:eq(1) th:eq(2)').attr('class')).toEqual('fist');
             expect(table.$('thead tr:eq(1) th:eq(3)').attr('class')).toEqual('lst');
             expect(table.$('thead tr:eq(1) th:eq(4)').attr('class')).toEqual('fist lst');
             expect(table.$('tbody tr:first td:eq(0)').attr('class')).toEqual('cell fist');

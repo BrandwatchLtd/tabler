@@ -1,9 +1,11 @@
+#!/bin/bash
+export NODE_ENV=development
 PORT=$1
 
 if [ -z $PORT ]; then
 	PORT=8080
 fi
 
-npm install -d
+npm install
 
-./node_modules/.bin/serve -p $PORT
+`npm bin`/serve -p $PORT

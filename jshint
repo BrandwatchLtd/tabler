@@ -1,0 +1,5 @@
+#!/bin/bash
+export NODE_ENV=development
+
+npm install
+`npm bin`/jshint .

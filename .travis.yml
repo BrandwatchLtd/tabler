@@ -1,13 +1,13 @@
 language: node_js
 
 node_js:
-   - "0.8"
+   - "0.10"
 
 before_script:
   - npm -q install
-  - npm -q install -g testem
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 script:
+  - ./jshint
   - ./testem -l Firefox,PhantomJS
 
