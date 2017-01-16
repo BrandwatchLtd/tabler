@@ -6,6 +6,9 @@
     "type": "git",
     "url": "git://github.com/BrandwatchLtd/tabler.git"
   },
+  "scripts": {
+    "version": "node update-bower-version.js && git add bower.json"
+  },
   "licenses": [
     {
       "type": "MIT",
