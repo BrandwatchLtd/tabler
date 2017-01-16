@@ -11,16 +11,18 @@ Tabler works as an AMD module or standalone
 
 ### AMD
 
-    define(['lib/tabler/tabler', 'lib/tabler/tabler.sortable'], function(tabler, sortable){
-        // Your module code
-        var table = tabler.create(columns, {plugins: [sortable]});
+```js
+define(['lib/tabler/tabler', 'lib/tabler/tabler.sortable'], function(tabler, sortable){
+    // Your module code
+    var table = tabler.create(columns, {plugins: [sortable]});
 
-        table.load([..data..]);
-        table.render();
+    table.load([..data..]);
+    table.render();
 
-        $(..el..).append(table.$el);
-        // More your module code
-    });
+    $(..el..).append(table.$el);
+    // More your module code
+});
+```
 
 ### Standalone
 
@@ -32,11 +34,13 @@ Tabler will be available via the `tabler` global object.  The plugins will hang 
 
 This is the simplest way to use tabler:
 
-    var table = tabler.create();
-    table.load([..array of objects..]);
-    table.render();
+```js
+var table = tabler.create();
+table.load([..array of objects..]);
+table.render();
 
-    $(..el..).append(table.$el);
+$(..el..).append(table.$el);
+```
 
 Tabler will automatically create a "spec" from the objects you passed in and render the data.
 
@@ -46,19 +50,21 @@ Of course you probably want to change which columns are shown, change the format
 
 This is done by passing an array of column "specs" to the `tabler.create()` method, a typical example:
 
-    var table = tabler.create([
-        {field: 'name', name: 'Name'},
-        {field: 'apples', name: '# Apples'},
-        {field: 'bananas', name: '# Bananas'}
-    ]);
+```js
+var table = tabler.create([
+    {field: 'name', name: 'Name'},
+    {field: 'apples', name: '# Apples'},
+    {field: 'bananas', name: '# Bananas'}
+]);
 
-    table.load([
-        {name: 'Steve', apples: 2, bananas: 4},
-        {name: 'Graham', apples: 1, bananas: 6},
-        {name: 'Dan', apples: 9, bananas: 2},
-        {name: 'Jon', apples: 5, bananas: 6}
-    ]);
-    table.render();
+table.load([
+    {name: 'Steve', apples: 2, bananas: 4},
+    {name: 'Graham', apples: 1, bananas: 6},
+    {name: 'Dan', apples: 9, bananas: 2},
+    {name: 'Jon', apples: 5, bananas: 6}
+]);
+table.render();
+```
 
 The Default set of configuration parameters are:
 
@@ -104,12 +110,16 @@ If you want to turn this off completely, and force a re-render of the entire row
 
 Simply pass the plugins in the options to the `create` method:
 
-    var table = tabler.create([..spec..], {plugins: [pager], pager: {pageSize: 10, currentPage: 0}});
-    // table.pager and table.sortable are now available and automatically applied on the next call to `render`
+```js
+var table = tabler.create([..spec..], {plugins: [pager], pager: {pageSize: 10, currentPage: 0}});
+// table.pager and table.sortable are now available and automatically applied on the next call to `render`
+```
 
 Or add plugins later on:
 
-    table.addPlugin(pager, {pageSize: 10, currentPage: 0})
+```js
+table.addPlugin(pager, {pageSize: 10, currentPage: 0})
+```
 
 As you can see some plugins have options that you can pass in the create options or in the second parameter to `addPlugin`.  They can also be accessed/changed after the fact on the plugin object itself (eg `tabler.pager.pageSize` etc)
 
@@ -123,40 +133,46 @@ Tabler has a number of plugins that come out-of-the-box
 
 Allows you to add an aggregator function to each column which can perform calculations, the function runs a reduce-like function on each row of data, displaying the final result in the footer of the table:
 
-    function totaliser(memo, value){
-        return (memo || 0) + value;
-    }
+```js
+function totaliser(memo, value){
+    return (memo || 0) + value;
+}
 
-    var table = tabler.create([
-        {name: 'Apples', field: 'apples', aggregator: totaliser}
-    ]);
-    table.render();
+var table = tabler.create([
+    {name: 'Apples', field: 'apples', aggregator: totaliser}
+]);
+table.render();
 
-    // The Apples tfoot td now has the total of all apples cells
+// The Apples tfoot td now has the total of all apples cells
+```
 
 ### columnGrouper
 
 Allows you to group columns
 
-    var table = tabler.create([
-        {field: 'name', name: 'Name'},
-        {field: 'apples', name: '# Apples', columnGroup: 'Fruit'},
-        {field: 'bananas', name: '# Bananas', columnGroup: 'Fruit'}
-    ]);
-    table.render();
+```js
+var table = tabler.create([
+    {field: 'name', name: 'Name'},
+    {field: 'apples', name: '# Apples', columnGroup: 'Fruit'},
+    {field: 'bananas', name: '# Bananas', columnGroup: 'Fruit'}
+]);
+table.render();
+```
 
-    The table will now have a th spanning the second and third column with the content "Fruit"
+The table will now have a th spanning the second and third column with the content "Fruit"
 
 ### pager
 
 Adds a pager to the footer of the table, with next/prev/first/last links & client-side paging capabilities (by default)
 
-    table.addPlugin(pager, {
-        pageSize: 20,
-        currentPage: 1,
-        hideWhenOnePage: true
-    });
-    table.render();
+```js
+table.addPlugin(pager, {
+    pageSize: 20,
+    currentPage: 1,
+    hideWhenOnePage: true
+});
+table.render();
+```
 
 Options:
 
@@ -179,11 +195,13 @@ If the `sizes` option is not passed in, then a default set of sizes of [20, 50, 
 
 Adds anchors to designated column headers, making them sortable on click
 
-    var table = tabler.create([
-        {field: 'name', name: 'Name'},
-        {field: 'apples', name: '# Apples', columnGroup: 'Fruit', sortable: true},
-        {field: 'bananas', name: '# Bananas', columnGroup: 'Fruit', sortable: true}
-    ]);
+```js
+var table = tabler.create([
+    {field: 'name', name: 'Name'},
+    {field: 'apples', name: '# Apples', columnGroup: 'Fruit', sortable: true},
+    {field: 'bananas', name: '# Bananas', columnGroup: 'Fruit', sortable: true}
+]);
+```
 
 Options:
 
@@ -205,3 +223,7 @@ Used in conjunction with the pager plugin, adds a "Jump to page" input box into 
 ### removeColumns
 
 Adds an "x" link to each toggleable column header and column group, which disables the column when clicked
+
+## Versioning
+
+Versioning is done through `npm` by running `npm version [<newversion> | major | minor | patch]`. For documentation visit [npm](https://docs.npmjs.com/cli/version).
