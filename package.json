@@ -9,6 +9,10 @@
   "scripts": {
     "version": "node update-bower-version.js && git add bower.json"
   },
+  "engines" : {
+      "node" : "^4.6",
+      "npm" : "^2.15"
+   },
   "licenses": [
     {
       "type": "MIT",
