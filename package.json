@@ -1,7 +1,7 @@
 {
   "name": "tabler",
   "description": "Client-side table generation",
-  "version": "0.10.19",
+  "version": "0.10.20",
   "repository": {
     "type": "git",
     "url": "git://github.com/BrandwatchLtd/tabler.git"
@@ -9,10 +9,10 @@
   "scripts": {
     "version": "node update-bower-version.js && git add bower.json"
   },
-  "engines" : {
-      "node" : "^4.6",
-      "npm" : "^2.15"
-   },
+  "engines": {
+    "node": "^4.6",
+    "npm": "^2.15"
+  },
   "licenses": [
     {
       "type": "MIT",
