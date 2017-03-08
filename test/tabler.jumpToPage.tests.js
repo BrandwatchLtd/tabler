@@ -135,5 +135,48 @@ define([
 
             renderStub.restore();
         });
+        describe('standalone', function() {
+            it('can be used without a tabler instance', function() {
+                var JumpToPage = jumpToPage,
+                    Pager = pager,
+                    p = new Pager(),
+                    jtp = new JumpToPage(),
+                    $jumpToPage;
+
+                jtp.attach({
+                    $el: $('<div />'),
+                    pager: p
+                });
+
+                $jumpToPage = $(jtp.render());
+
+                expect($jumpToPage.is('p')).toEqual(true);
+                expect($jumpToPage.hasClass('jumpToPage')).toEqual(true);
+            });
+
+            it('when attached renders in pager', function() {
+                var JumpToPage = jumpToPage,
+                    Pager = pager,
+                    p = new Pager(),
+                    jtp = new JumpToPage(),
+                    $pager,
+
+                    $div = $('<div />'),
+                    instance = {
+                        $el: $div,
+                        pager: p
+                    };
+
+                p.attach(instance);
+                jtp.attach(instance);
+
+                p.currentPage = 3;
+                p.totalResults = 10;
+
+                $pager = $('<div>' + p.render() + '</div>');
+
+                expect($pager.find('.jumpToPage').length).toEqual(1);
+            });
+        });
     });
 });
