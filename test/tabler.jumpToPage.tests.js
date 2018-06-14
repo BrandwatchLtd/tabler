@@ -135,6 +135,22 @@ define([
 
             renderStub.restore();
         });
+        it('sets input to invalid & clears when a value smaller than 1 is entered', function(){
+            var renderStub;
+
+            table.render();
+
+            renderStub = sinon.stub(table, 'render');
+
+            table.$('p.jumpToPage input').val(0);
+            table.$('p.jumpToPage button').click();
+
+            expect(renderStub.called).toEqual(false);
+            expect(table.$('p.jumpToPage input').hasClass('invalid')).toEqual(true);
+
+            renderStub.restore();
+        });
+
         describe('standalone', function() {
             it('can be used without a tabler instance', function() {
                 var JumpToPage = jumpToPage,
