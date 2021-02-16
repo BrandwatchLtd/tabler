@@ -23,7 +23,7 @@
   "dependencies": {},
   "devDependencies": {
     "mocha": "^5.2.0",
-    "serve": "^9.4.0",
+    "serve": "^11.3.2",
     "testem": "^2.9.0"
   },
   "optionalDependencies": {},
