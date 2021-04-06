@@ -10,10 +10,6 @@
     "test": "./testem",
     "version": "node update-bower-version.js && git add bower.json"
   },
-  "engines": {
-    "node": "^4.6",
-    "npm": "^2.15"
-  },
   "licenses": [
     {
       "type": "MIT",
@@ -25,31 +21,5 @@
     "mocha": "^5.2.0",
     "serve": "^11.3.2",
     "testem": "^2.9.0"
-  },
-  "optionalDependencies": {},
-  "volo": {
-    "dependencies": {
-      "jquery": "jquery/jquery",
-      "underscore": "documentcloud/underscore"
-    }
-  },
-  "testling": {
-    "browsers": [
-      "ie6",
-      "ie7",
-      "ie8",
-      "ie9",
-      "firefox/15",
-      "chrome/22",
-      "opera/12",
-      "safari/5.1"
-    ],
-    "harness": "mocha",
-    "scripts": [
-      "lib/expectations.js",
-      "test/lib/sinon-1.1.0.js",
-      "test/lib/require.js",
-      "test/loader.js"
-    ]
   }
 }
