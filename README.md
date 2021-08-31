@@ -1,7 +1,7 @@
 Tabler.js
 ========
 
-[![Build Status](https://travis-ci.org/BrandwatchLtd/tabler.png?branch=master)](https://travis-ci.org/BrandwatchLtd/tabler)
+[![Build Status](https://github.com/BrandwatchLtd/tabler/actions/workflows/node.js.yml/badge.svg)](https://github.com/BrandwatchLtd/tabler/actions/workflows/node.js.yml)
 
 A lightweight library for building dynamic tables. [View the demos](http://brandwatchltd.github.com/tabler/demo/)
 
