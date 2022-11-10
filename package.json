@@ -18,8 +18,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^9.1.1",
-    "serve": "^12.0.0",
+    "mocha": "^9.2.2",
+    "serve": "^14.1.1",
     "testem": "^3.5.0"
   }
 }
